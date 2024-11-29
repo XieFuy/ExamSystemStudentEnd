@@ -9,10 +9,16 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    clientsocket.cpp \
     dbhelper.cpp \
     logincontorller.cpp \
     loginmodel.cpp \
     main.cpp \
+    mainmenuecontorller.cpp \
+    mainmenuedlg.cpp \
+    mainmenuemodel.cpp \
+    namechangedlg.cpp \
+    phonenumberchangedlg.cpp \
     registercontorller.cpp \
     registerdlg.cpp \
     registermodel.cpp \
@@ -20,14 +26,23 @@ SOURCES += \
 
 HEADERS += \
     DBHelper.h \
+    clientsocket.h \
     logincontorller.h \
     loginmodel.h \
+    mainmenuecontorller.h \
+    mainmenuedlg.h \
+    mainmenuemodel.h \
+    namechangedlg.h \
+    phonenumberchangedlg.h \
     registercontorller.h \
     registerdlg.h \
     registermodel.h \
     widget.h
 
 FORMS += \
+    mainmenuedlg.ui \
+    namechangedlg.ui \
+    phonenumberchangedlg.ui \
     registerdlg.ui \
     widget.ui
 
@@ -47,3 +62,6 @@ DEPENDPATH += $$PWD/.
 win32:!win32-g++: PRE_TARGETDEPS += $$PWD/./libmysql.lib
 
 INCLUDEPATH += .\include
+
+
+LIBS += -lws2_32
