@@ -39,7 +39,8 @@ void CMainMenueModel::changeHeadPicture(char* localFilePath ,char* fileName,char
     fclose(pFile);
     memcpy(data + fileSize + 2,headPath.c_str(),headPath.size());
     //进行封包操作
-    CClientSocket* clientsocket = CClientSocket::getInstance();
+//    CClientSocket* clientsocket = CClientSocket::getInstance();
+    CClientSocket* clientsocket = new CClientSocket();
     clientsocket->initSocket();
     bool ret =  clientsocket->connectToServer();
     if(!ret)
@@ -51,8 +52,9 @@ void CMainMenueModel::changeHeadPicture(char* localFilePath ,char* fileName,char
     clientsocket->Send(packet);
     delete[] data;
     clientsocket->closeSocket();
-
+    delete clientsocket;
     //对数据库进行操作,更该当前用户的头像的存储路径
+//    CDBHelper* dbHelper = CDBHelper::getInstance();
     CDBHelper* dbHelper = new CDBHelper();
     char sqlBuf[1024];
     memset(sqlBuf,'\0',sizeof(sqlBuf));

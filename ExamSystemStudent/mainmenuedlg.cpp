@@ -38,7 +38,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_5->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_6->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+//        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
     });
 
     QObject::connect(this->ui->pushButton_4,&QPushButton::clicked,[=](){
@@ -48,7 +48,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_5->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_6->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+//        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
     });
 
     QObject::connect(this->ui->pushButton_5,&QPushButton::clicked,[=](){
@@ -58,7 +58,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_6->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+//        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
     });
 
     QObject::connect(this->ui->pushButton_6,&QPushButton::clicked,[=](){
@@ -68,17 +68,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_5->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-    });
-
-    QObject::connect(this->ui->pushButton_7,&QPushButton::clicked,[=](){
-        this->ui->stackedWidget->setCurrentIndex(4);
-        this->ui->pushButton_7->setStyleSheet("QPushButton{border:1px solid #50b8f7;background-color:#50b8f7;color:#ffffff;border-radius:20;}");
-        //其他的都要设置为原样
-        this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_5->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_6->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-        this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+//        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
     });
 
     //进行员工职员姓名和头像回显
@@ -137,7 +127,7 @@ void CMainMenueDlg::headPictureChange()
 {
     QString fileName = QFileDialog::getOpenFileName(
          this,
-         tr("请选择PNG图片,并且单张图片不得超过2MB"),
+         tr("请选择PNG图片,并且单张图片不得超过400KB"),
          QDir::homePath(),
          tr("PNG Files (*.png);;All Files (*)")
      );
@@ -145,6 +135,7 @@ void CMainMenueDlg::headPictureChange()
        qDebug()<<fileName;
        this->m_mainMenueContorller->changeHeadPicture(fileName,this->m_acount);
        emit this->startShowStudentInfo(this->m_acount);
+//       emit this->startShowTeacherInfo(this->m_acount);
      } else {
        return;
      }
@@ -228,7 +219,7 @@ void CMainMenueDlg::setLoginedAcount(QString acount)
 */
 
 void  CMainMenueDlg::showStudentInfo(QString acount)
-{
+{ 
    std::vector<std::vector<std::string>> ret =  this->m_mainMenueContorller->showStudentInfo(acount);
    std::string tempStr =  ret.at(0).at(0);
    QString str = QString::fromLocal8Bit(tempStr.c_str());
@@ -256,48 +247,54 @@ void CMainMenueDlg::showHeadImageUI(QImage image)
 
 void CMainMenueDlg::threadShowHead()
 {
-    CClientSocket* clientSocket = CClientSocket::getInstance();
-    clientSocket->initSocket();
-    bool ret2 =  clientSocket->connectToServer();
-    if(!ret2)
-    {
-        return;
-    }
-    //进行封包操作
-    char* data = new char[1024];
-    memset(data,'\0',sizeof(char) * 1024);
-    strcpy(data,this->m_headPath.c_str());
-    clientSocket->makePacket(data,strlen(data),0);
-    delete[] data;
-    //发送数据包
-    char* packet = clientSocket->getPacket();
-    long long packetSize = clientSocket->getPacketSize();
-    int size =  clientSocket->Send(packet);
-    qDebug()<<"send size: "<<size;
-    char* recvBuffer = new char[packetSize]; //服务器返回也是一个包的大小
-    size =  clientSocket->Recv(recvBuffer);
-    qDebug()<<"recv size: "<<size;
-    clientSocket->closeSocket();
-    //解包拿去数据
-    char* p = recvBuffer;
-    WORD head ;
-    memcpy(&head,p,sizeof(WORD));
-    p += sizeof(WORD);
-    DWORD length;
-    memcpy(&length,p,sizeof(DWORD));
-    p += sizeof(DWORD);
-    WORD cmd;
-    memcpy(&cmd,p,sizeof(WORD));
-    p += sizeof(WORD);
-    char* pixmapData = new char[length]; //只要数据，不包含\0
-    memmove(pixmapData,p,length);
+    //    CClientSocket* clientSocket = CClientSocket::getInstance();
+        CClientSocket* clientSocket = new CClientSocket();
+        clientSocket->initSocket();
+        bool ret2 =  clientSocket->connectToServer();
+        if(!ret2)
+        {
+            return;
+        }
+        //进行封包操作
+        char* data = new char[1024];
+        memset(data,'\0',sizeof(char) * 1024);
+        strcpy(data,this->m_headPath.c_str());
+        clientSocket->makePacket(data,strlen(data),0);
+        delete[] data;
+        //发送数据包
+        char* packet = clientSocket->getPacket();
+        long long packetSize = clientSocket->getPacketSize();
+        int size =  clientSocket->Send(packet);
+        qDebug()<<"send size: "<<size;
+        char* recvBuffer = new char[packetSize]; //服务器返回也是一个包的大小
+        size =  clientSocket->Recv(recvBuffer);
+        qDebug()<<"recv size: "<<size;
+        clientSocket->closeSocket();
+        delete clientSocket;
+        //解包拿去数据
+        char* p = recvBuffer;
+        WORD head ;
+        memcpy(&head,p,sizeof(WORD));
+        p += sizeof(WORD);
+        DWORD length;
+        memcpy(&length,p,sizeof(DWORD));
+        p += sizeof(DWORD);
+        WORD cmd;
+        memcpy(&cmd,p,sizeof(WORD));
+        p += sizeof(WORD);
+        char* pixmapData = new char[length]; //只要数据，不包含\0
+        memmove(pixmapData,p,length);
 
-    QByteArray ba(pixmapData,length);
-    QImage image;
-    image.loadFromData(ba,"PNG");
-    emit this->startShowHeadImage(image);
-    delete[] pixmapData;
-    delete[] recvBuffer;
+        QByteArray ba(pixmapData,length);
+        QImage image;
+        image.loadFromData(ba,"PNG");
+        if(image.isNull())
+        {
+            qDebug()<<"头像获取失败！";
+        }
+        emit this->startShowHeadImage(image);
+        delete[] pixmapData;
+        delete[] recvBuffer;
 }
 
 unsigned WINAPI CMainMenueDlg::threadShowHeadEntry(LPVOID arg)

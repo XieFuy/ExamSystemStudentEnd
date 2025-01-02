@@ -315,7 +315,7 @@ color:#50b8f7;
 }</string>
     </property>
     <property name="text">
-     <string>考题编辑管理</string>
+     <string>班级管理</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_4">
@@ -349,7 +349,7 @@ color:#50b8f7;
 }</string>
     </property>
     <property name="text">
-     <string>考题信息管理</string>
+     <string>考试管理</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_5">
@@ -383,7 +383,7 @@ color:#50b8f7;
 }</string>
     </property>
     <property name="text">
-     <string>学生成绩管理</string>
+     <string>个人成绩管理</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_6">
@@ -417,41 +417,7 @@ color:#50b8f7;
 }</string>
     </property>
     <property name="text">
-     <string>学生信息管理</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_7">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>380</y>
-      <width>141</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>黑体</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">#pushButton_7{
-border:none;
-border:1px solid #faa046;
-color:#faa046;
-border-radius:20;
-}
-
-#pushButton_7:hover{
-border:1px solid #50b8f7;
-color:#50b8f7;
-}</string>
-    </property>
-    <property name="text">
-     <string>学生试卷批改</string>
+     <string>消息通知</string>
     </property>
    </widget>
   </widget>
@@ -465,7 +431,7 @@ color:#50b8f7;
     </rect>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QWidget" name="widget_3" native="true">
@@ -546,7 +512,7 @@ color:#50b8f7;
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>0</y>
+       <y>-10</y>
        <width>1421</width>
        <height>861</height>
       </rect>
@@ -667,7 +633,7 @@ border:none;
        </font>
       </property>
       <property name="text">
-       <string>职工号：</string>
+       <string>学号：</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_37">

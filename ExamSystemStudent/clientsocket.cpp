@@ -1,13 +1,14 @@
 #include "clientsocket.h"
 
-CClientSocket* CClientSocket::m_instance = nullptr;
-CClientSocket::CHelper  CClientSocket::m_helper;
+//CClientSocket* CClientSocket::m_instance = nullptr;
+//CClientSocket::CHelper  CClientSocket::m_helper;
 
 CClientSocket::CClientSocket()
 {
     this->initSocketVal(); //初始化网络环境
-    this->m_packetSize = 2 + 4 + 2 + (1024*1024*2) + 1;
-    this->m_packet = new char[this->m_packetSize]; //数据部分的大小是2MB的大小
+//    this->m_packetSize = 2 + 4 + 2 + (1024*1024*2) + 1;
+    this->m_packetSize = 2 + 4 + 2 +(1024 * 500) + 1;
+    this->m_packet = new char[this->m_packetSize]; //数据部分的大小是500KB的大小
     memset(this->m_packet,'\0',sizeof(char)*this->m_packetSize);
 }
 
@@ -21,33 +22,33 @@ CClientSocket::~CClientSocket()
     }
 }
 
-CClientSocket* CClientSocket::getInstance()
-{
-    if(CClientSocket::m_instance == nullptr)
-    {
-        CClientSocket::m_instance = new CClientSocket();
-    }
-    return CClientSocket::m_instance;
-}
+//CClientSocket* CClientSocket::getInstance()
+//{
+//    if(CClientSocket::m_instance == nullptr)
+//    {
+//        CClientSocket::m_instance = new CClientSocket();
+//    }
+//    return CClientSocket::m_instance;
+//}
 
-void CClientSocket::releaseInstance()
-{
-    if(CClientSocket::m_instance != nullptr)
-    {
-        delete CClientSocket::m_instance;
-        CClientSocket::m_instance = nullptr;
-    }
-}
+//void CClientSocket::releaseInstance()
+//{
+//    if(CClientSocket::m_instance != nullptr)
+//    {
+//        delete CClientSocket::m_instance;
+//        CClientSocket::m_instance = nullptr;
+//    }
+//}
 
-CClientSocket::CHelper::CHelper()
-{
-    CClientSocket::getInstance();
-}
+//CClientSocket::CHelper::CHelper()
+//{
+//    CClientSocket::getInstance();
+//}
 
-CClientSocket::CHelper::~CHelper()
-{
-    CClientSocket::releaseInstance();
-}
+//CClientSocket::CHelper::~CHelper()
+//{
+//    CClientSocket::releaseInstance();
+//}
 
 void CClientSocket::initSocketVal()
 {
@@ -73,14 +74,21 @@ void CClientSocket::clearUpSocketVal()
 
 void CClientSocket::initSocket()
 {
+    if(this->m_clientSocket != INVALID_SOCKET)
+    {
+        this->closeSocket();
+    }
     this->m_clientSocket = socket(AF_INET,SOCK_STREAM,0);
     if(this->m_clientSocket == INVALID_SOCKET)
     {
         qDebug()<<"socket Error！ errorno: "<<WSAGetLastError();
         return ;
     }
-    int size = 1024*1024*2;
-    setsockopt(this->m_clientSocket, SOL_SOCKET, SO_SNDBUF, (const char *)&size, sizeof(size));
+//    int size = 1024*1024*2;
+   // setsockopt(this->m_clientSocket, SOL_SOCKET, SO_SNDBUF, (const char *)&size, sizeof(size));
+
+    //崩溃的原因是因为多次进行设置sockaddr_in结构体导致的，具体原因不明
+    memset(&this->m_sockAddrClient,0,sizeof(this->m_sockAddrClient));
     this->m_sockAddrClient.sin_port = htons(9527); //客户端连接9527端口
     this->m_sockAddrClient.sin_family = AF_INET;
     this->m_sockAddrClient.sin_addr.S_un.S_addr = inet_addr("120.78.122.212"); //填入服务器的地址
@@ -116,6 +124,28 @@ int CClientSocket::Send(char* pData)
         alReadySend += ret;
     }
     return  alReadySend;
+}
+
+int CClientSocket::Recv(char* buffer,int recvDataSize)
+{
+    if(buffer == nullptr)
+    {
+        return -1;
+    }
+
+    //循环接收直到接收完毕一个数据包为止
+    long long alReadRecv = 0;
+    long long recvCount = recvDataSize;
+    while(alReadRecv < recvCount)
+    {
+        int ret =  recv(this->m_clientSocket,buffer + alReadRecv,recvCount - alReadRecv,0);
+        if(ret <= 0)
+        {
+            break;
+        }
+        alReadRecv += ret;
+    }
+    return alReadRecv;
 }
 
 int CClientSocket::Recv(char* buffer)
@@ -159,7 +189,7 @@ long long CClientSocket::getPacketSize()
     return this->m_packetSize;
 }
 
-void CClientSocket::makePacket(char* pData,size_t length,WORD cmd) //注意单个数据包的数据位长度不能超过2MB
+void CClientSocket::makePacket(char* pData,size_t length,WORD cmd) //注意单个数据包的数据位长度不能超过500K
 {
     if(pData == nullptr || length <= 0)
     {
