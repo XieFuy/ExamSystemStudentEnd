@@ -6,7 +6,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     ui(new Ui::CMainMenueDlg)
 {
     ui->setupUi(this);
-    this->setWindowTitle("在线考试系统-教师端");
+    this->setWindowTitle("在线考试系统-学生端");
     this->setWindowIcon(QIcon(":/icons/winIcon.png"));
 
     //生成控制层
@@ -121,6 +121,22 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this->ui->pushButton_2,&QPushButton::clicked,this,&CMainMenueDlg::headPictureChange);
 
     QObject::connect(this,&CMainMenueDlg::startShowStudentAcountInfo,this,&CMainMenueDlg::showStudentAcountInfo);
+
+    QObject::connect(this->ui->pushButton_29,&QPushButton::clicked,[=](){
+        if(this->m_joinClassdlg == nullptr)
+        {
+            this->m_joinClassdlg = new CJoinClassDlg();
+            this->m_joinClassdlg->setAcount(this->m_acount);
+            this->m_joinClassdlg->setStudentName(this->ui->label_3->text().trimmed());
+            this->m_joinClassdlg->move((this->width() - this->m_joinClassdlg->width()) / 2,(this->height() - this->m_joinClassdlg->height()) / 2);
+            this->m_joinClassdlg->exec();
+            if(this->m_joinClassdlg != nullptr)
+            {
+                delete this->m_joinClassdlg;
+                this->m_joinClassdlg = nullptr;
+            }
+        }
+    });
 }
 
 void CMainMenueDlg::headPictureChange()
@@ -135,7 +151,6 @@ void CMainMenueDlg::headPictureChange()
        qDebug()<<fileName;
        this->m_mainMenueContorller->changeHeadPicture(fileName,this->m_acount);
        emit this->startShowStudentInfo(this->m_acount);
-//       emit this->startShowTeacherInfo(this->m_acount);
      } else {
        return;
      }

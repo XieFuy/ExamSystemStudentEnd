@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     clientsocket.cpp \
     dbhelper.cpp \
+    joinclassdlg.cpp \
     logincontorller.cpp \
     loginmodel.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     DBHelper.h \
     clientsocket.h \
+    joinclassdlg.h \
     logincontorller.h \
     loginmodel.h \
     mainmenuecontorller.h \
@@ -40,6 +42,7 @@ HEADERS += \
     widget.h
 
 FORMS += \
+    joinclassdlg.ui \
     mainmenuedlg.ui \
     namechangedlg.ui \
     phonenumberchangedlg.ui \

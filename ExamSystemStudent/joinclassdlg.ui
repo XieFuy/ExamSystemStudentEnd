@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CJoinClassDlg</class>
+ <widget class="QDialog" name="CJoinClassDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>541</width>
+    <height>174</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#CJoinClassDlg
+{
+background-color:#f1f3f6;
+}</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>10</y>
+     <width>521</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#widget
+{
+background-color:#ffffff;
+border-radius:50; 
+}</string>
+   </property>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>361</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>黑体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#lineEdit
+{
+border:1px solid #646465;
+}</string>
+    </property>
+    <property name="placeholderText">
+     <string>输入职工号:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>20</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>黑体</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#pushButton_2
+{
+border:1px solid #50b8fd;
+background-color:#FFFFFF;
+color:#50b8fd;
+border-radius:10;
+}
+
+#pushButton_2:hover
+{
+background-color: #50b8fd;
+color:#ffffff;
+}</string>
+    </property>
+    <property name="text">
+     <string>查询教师</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>70</y>
+      <width>451</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>黑体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox{
+  color:#666666;
+  padding: 1px 15px 1px 3px;
+  border: 1px solid #50b8fd;
+}
+
+QComboBox::drop-down
+{
+border-image:url(:/icons/comboxDowm.png);
+min-width:30px;
+min-heigth:30px;
+}
+
+QComboBox#comboBox::drop-down:checked
+{
+border-image:url(:/icons/comboxUp.png);
+}
+
+QComboBox QAbstractItemView{
+	background:rgba(255,255,255,1);
+    border:1px solid rgba(228,228,228,1);
+    border-radius:0px 0px 5px 5px;
+	font-size:14px;
+    outline: 0px;  
+ }
+</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>120</y>
+      <width>281</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>黑体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#pushButton
+{
+border:none;
+color:#ffffff;
+  background-color: qlineargradient(
+        x1: 0, y1: 0,
+        x2: 1, y2: 1,
+        stop: 0 #767aff,
+        stop: 1 #83bcff 
+    );
+border-radius:20;
+}
+
+
+#pushButton:hover
+{
+  background-color: qlineargradient(
+        x1: 0, y1: 0,
+        x2: 1, y2: 1,
+        stop: 0 #ec7f9e,
+        stop: 1 #9ca2c4 
+    );
+}</string>
+    </property>
+    <property name="text">
+     <string>申请加入</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

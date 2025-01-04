@@ -18,6 +18,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QHBoxLayout>
+#include "joinclassdlg.h"
 
 namespace Ui {
 class CMainMenueDlg;  //主菜单管理页面
@@ -45,6 +46,7 @@ private:
     CNameChangeDlg* m_nameChangeDlg = nullptr; //修改姓名信息对话框
     CPhoneNumberChangeDlg* m_phoneNumChangeDlg = nullptr;//修改电话对话框
     HANDLE m_recvHeadThead; //接收头像信息的线程
+    CJoinClassDlg* m_joinClassdlg = nullptr;
 private: 
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 
@@ -60,6 +62,8 @@ private:
     static unsigned WINAPI threadChangeGenderEntry(LPVOID arg);
 
     void headPictureChange();//进行头像更换
+
+
 private:
     Ui::CMainMenueDlg *ui;
 };
