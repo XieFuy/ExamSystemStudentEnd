@@ -38,6 +38,9 @@ signals:
     void startShowStudentInfo(QString acount);
     void startShowHeadImage(QImage image);
     void startShowStudentAcountInfo(std::vector<std::vector<std::string>>* ret);
+    void startShowClassTable(QVector<QVector<QString>>* ret);
+    void startShowClassIcon(QImage* image);
+    void startGetClassTableInfo();
 private:
 //    CExitLoginDlg* m_exitLoginDlg = nullptr;
     CMainMenueContorller* m_mainMenueContorller = nullptr; //主菜单页面控制层
@@ -47,7 +50,19 @@ private:
     CPhoneNumberChangeDlg* m_phoneNumChangeDlg = nullptr;//修改电话对话框
     HANDLE m_recvHeadThead; //接收头像信息的线程
     CJoinClassDlg* m_joinClassdlg = nullptr;
-private: 
+    int sortNumberClass;
+    QVector<QWidget*> m_classCheckVec ;
+    QVector<QWidget*> m_classIconVec;
+    QVector<QLabel*> m_classNameVec;
+    QVector<QLabel*> m_classCreateTimeVec;
+    QVector<QLabel*> m_classCreatorVec;
+    QVector<QWidget*> m_classOperationsVec;
+    int m_classCurPageIndex;
+    int classIconIndex;
+    std::string m_ClassIconPath;
+    HANDLE m_Event;
+    HANDLE m_Event_2;
+private:
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 
     static unsigned WINAPI threadShowHeadEntry(LPVOID arg); //进行与服务器进行网络通信获取头像数据的线程函数
@@ -63,7 +78,31 @@ private:
 
     void headPictureChange();//进行头像更换
 
+    //初始化课程管理表UI
+    void initJoinClassTableUI(); //初始化加入课程表的UI
 
+    //初始化课程表控件
+    void initJoinClassTableContorl();
+
+    //绑定课程表的按钮操作
+    void bindClassOperators();
+
+    //初始化课程数据库表
+    void initClassTableDatabase();
+    static unsigned WINAPI threadInitClassTableDatabaseEntry(LPVOID arg);
+
+    //获取当前页的加入课程数据
+    void getClassTableData();
+    static unsigned WINAPI threadGetClassTableDataEntry(LPVOID arg);
+
+    //UI显示课程表信息(更新UI)
+    void showClassTableInfo(QVector<QVector<QString>>* ret);
+
+    void clearClassTableControl(); //清除课程表UI
+
+    static unsigned WINAPI showClassIcon(LPVOID arg);
+
+    void showClassIconUI(QImage* image);
 private:
     Ui::CMainMenueDlg *ui;
 };
