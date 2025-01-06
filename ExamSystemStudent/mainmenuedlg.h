@@ -41,6 +41,8 @@ signals:
     void startShowClassTable(QVector<QVector<QString>>* ret);
     void startShowClassIcon(QImage* image);
     void startGetClassTableInfo();
+    void startShowClassTableIndex();
+    void startGetClassTableCount();
 private:
 //    CExitLoginDlg* m_exitLoginDlg = nullptr;
     CMainMenueContorller* m_mainMenueContorller = nullptr; //主菜单页面控制层
@@ -62,6 +64,7 @@ private:
     std::string m_ClassIconPath;
     HANDLE m_Event;
     HANDLE m_Event_2;
+    QString m_classCount;
 private:
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 
@@ -103,6 +106,18 @@ private:
     static unsigned WINAPI showClassIcon(LPVOID arg);
 
     void showClassIconUI(QImage* image);
+
+    void getClassTableCount();//进行获取课程表所有符合条件的总页数
+    static unsigned WINAPI threadGetClassTableCountEntry(LPVOID arg);
+
+    void showClassTableIndex();
+
+    //拿取课程表的下一页数据
+    void showClassTableNextPage(); //显示课程表的下一页
+
+    //拿到课程表的上一页数据
+    void showClassTableLastPage();//显示课程表的上一页数据
+
 private:
     Ui::CMainMenueDlg *ui;
 };

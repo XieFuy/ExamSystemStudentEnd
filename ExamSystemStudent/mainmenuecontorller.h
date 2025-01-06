@@ -16,6 +16,7 @@ public :
     void changeHeadPicture(QString LocalFilePath,QString acount);
     bool initClassTableDatabase();
     std::vector<std::vector<std::string>> getClassTableData(QString acount,int curPageIndex);
+    int getClassTableCount(QString acount);
  private:
     CMainMenueModel* m_mainMenueModel = nullptr;
 };

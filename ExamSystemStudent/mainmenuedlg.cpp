@@ -21,7 +21,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
 //    this->m_exitLoginDlg->installEventFilter(this);
 
     this->m_acount = "";
-
+    this->m_classCount = "";
     this->sortNumberClass = 0;
     this->m_classCurPageIndex = 1;
     this->classIconIndex = 0;
@@ -44,7 +44,8 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
         this->ui->pushButton_5->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_6->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
 //        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
-
+        this->getClassTableData();
+        this->getClassTableCount();
     });
 
     QObject::connect(this->ui->pushButton_4,&QPushButton::clicked,[=](){
@@ -149,6 +150,95 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this,&CMainMenueDlg::startShowClassTable,this,&CMainMenueDlg::showClassTableInfo);
     QObject::connect(this,&CMainMenueDlg::startShowClassIcon,this,&CMainMenueDlg::showClassIconUI);
     QObject::connect(this,&CMainMenueDlg::startGetClassTableInfo,this,&CMainMenueDlg::getClassTableData);
+    QObject::connect(this,&CMainMenueDlg::startShowClassTableIndex,&CMainMenueDlg::showClassTableIndex);
+    QObject::connect(this,&CMainMenueDlg::startGetClassTableCount,this,&CMainMenueDlg::getClassTableCount);
+    QObject::connect(this->ui->pushButton_31,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableNextPage);
+    QObject::connect(this->ui->pushButton_30,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableLastPage);
+}
+
+void CMainMenueDlg::showClassTableLastPage()
+{
+    if(this->m_classCount == "0")
+    {
+        return;
+    }
+    //防止恶意刷新
+    if(this->m_classCurPageIndex <= 1)
+    {
+        return ;
+    }
+    //清除当前表中的记录
+   this->clearClassTableControl();
+    //给当前页递减，并且不能低于1
+    if(this->m_classCurPageIndex > 1)
+    {
+       this->m_classCurPageIndex -= 1;
+    }
+    emit this->ui->checkBox_8->toggled(false);
+    this->ui->checkBox_8->setChecked(false);
+    emit this->startGetClassTableInfo();
+    this->getClassTableCount();
+}
+
+void CMainMenueDlg::showClassTableNextPage()
+{
+    if(this->m_classCount == "0") //如果查询的结果集为空则不进行操作
+    {
+        return;
+    }
+
+    if(QString::number(this->m_classCurPageIndex) == this->m_classCount)
+    {
+        return;
+    }
+    //清除当前表中的记录
+    this->clearClassTableControl();
+
+    //给当前页自增，并且不能超过总页
+    if(QString::number(this->m_classCurPageIndex) != this->m_classCount)
+    {
+        this->m_classCurPageIndex += 1;
+    }
+
+    //清除选中项
+    emit this->ui->checkBox_8->toggled(false);
+    this->ui->checkBox_8->setChecked(false);
+    emit this->startGetClassTableInfo();
+    this->getClassTableCount();
+}
+
+void CMainMenueDlg::showClassTableIndex()
+{
+    QString first = QString::number(this->m_classCurPageIndex);
+    first += "/";
+    first += this->m_classCount;
+    this->ui->label_58->setText(first);
+}
+
+typedef struct getClassTableCountArg
+{
+    QString acount;
+    CMainMenueDlg* thiz;
+}GetClassTableCountArg;
+
+void CMainMenueDlg::getClassTableCount()
+{
+    GetClassTableCountArg* arg = new GetClassTableCountArg();
+    arg->acount = this->m_acount;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CMainMenueDlg::threadGetClassTableCountEntry,arg,0,nullptr);
+}
+
+unsigned WINAPI CMainMenueDlg::threadGetClassTableCountEntry(LPVOID arg)
+{
+    GetClassTableCountArg* gInfo = (GetClassTableCountArg*)arg;
+    int ret =  gInfo->thiz->m_mainMenueContorller->getClassTableCount(gInfo->acount);
+    gInfo->thiz->m_classCount = QString::number(ret);
+    //进行发送信号，进行显示总页数
+    emit gInfo->thiz->startShowClassTableIndex();
+    delete gInfo;
+    _endthreadex(0);
+    return 0;
 }
 
 void CMainMenueDlg::clearClassTableControl()

@@ -87,6 +87,7 @@ void Widget::login() //执行登录逻辑
                 this->m_mainMenueDlg->setLoginedAcount(acount);
                 emit this->m_mainMenueDlg->startShowStudentInfo(acount);
                 emit this->m_mainMenueDlg->startGetClassTableInfo();
+                emit this->m_mainMenueDlg->startGetClassTableCount();
                 this->hide();
                 //监听主菜单页面的退出消息
                 QObject::connect(this->m_mainMenueDlg,&CMainMenueDlg::rejected,[=](){
