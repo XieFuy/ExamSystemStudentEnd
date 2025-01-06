@@ -18,6 +18,8 @@ public :
     std::vector<std::vector<std::string>> getClassTableData(QString acount,int curPageIndex);
     int getClassTableCount(QString acount);
     bool deleteClassInfoByDateTime(QString acount,QString createTime,QString className);
+    bool deleteMultiClassInfo(QString acount,QList<QString>& createTimeLst,QList<QString>& classNameLst);
+    static unsigned threadDeleteMultiClassInfo(LPVOID arg);
  private:
     CMainMenueModel* m_mainMenueModel = nullptr;
 };

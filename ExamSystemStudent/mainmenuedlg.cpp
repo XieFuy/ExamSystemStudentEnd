@@ -155,6 +155,74 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this->ui->pushButton_31,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableNextPage);
     QObject::connect(this->ui->pushButton_30,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableLastPage);
     QObject::connect(this->ui->checkBox_8,&QCheckBox::toggled,this,&CMainMenueDlg::changeClassCurPageCheckBoxStatus);
+    QObject::connect(this->ui->pushButton_32,&QPushButton::clicked,this,&CMainMenueDlg::deleteMultiClassInfo);
+
+}
+
+typedef struct deleteMultiClassInfoArg
+{
+    QString acount;
+    QList<QString>* createTimeLst;
+    QList<QString>* classNameLst;
+    CMainMenueDlg* thiz;
+}DeleteMultiClassInfoArg;
+
+void CMainMenueDlg::deleteMultiClassInfo()
+{
+    DeleteMultiClassInfoArg*  arg = new DeleteMultiClassInfoArg();
+    arg->thiz = this;
+    arg->acount = this->m_acount;
+
+    QList<QString>* createTimeLst = new QList<QString>();
+    arg->classNameLst = new QList<QString>();
+    for(int i = 0 ; i < this->m_classCheckVec.size();i++)
+    {
+        QList<QCheckBox*> ret =  this->m_classCheckVec.at(i)->findChildren<QCheckBox*>();
+        for(QCheckBox* check :ret)
+        {
+            if(check->isChecked())
+            {
+                QString createTime = this->m_classCreateTimeVec.at(i)->text().trimmed();
+                if(createTime != "")
+                {
+                    createTimeLst->push_back(createTime);
+                }
+                QString className = this->m_classNameVec.at(i)->text().trimmed();
+                if(className != "")
+                {
+                    arg->classNameLst->push_back(className);
+                }
+            }
+        }
+    }
+    arg->createTimeLst = createTimeLst;
+    _beginthreadex(nullptr,0,&CMainMenueDlg::threadDeleteMultiClassInfo,arg,0,nullptr);
+    //将复选框进行设置为未选中
+    for(int i = 0 ; i < this->m_classCheckVec.size();i++)
+    {
+        QList<QCheckBox*> ret =  this->m_classCheckVec.at(i)->findChildren<QCheckBox*>();
+        for(QCheckBox* check : ret)
+        {
+            check->setChecked(false);
+        }
+    }
+    this->ui->checkBox_8->setChecked(false);
+}
+
+unsigned WINAPI CMainMenueDlg::threadDeleteMultiClassInfo(LPVOID arg)
+{
+    DeleteMultiClassInfoArg* dInfo = (DeleteMultiClassInfoArg*)arg;
+    dInfo->thiz->m_mainMenueContorller->deleteMultiClassInfo(dInfo->acount,*dInfo->createTimeLst,*dInfo->classNameLst);
+    delete dInfo->createTimeLst;
+    delete dInfo->classNameLst;
+    delete dInfo;
+
+    //批量操作后需要将下表进行设置为1
+    dInfo->thiz->m_classCurPageIndex = 1;
+    emit dInfo->thiz->startGetClassTableInfo();
+    dInfo->thiz->getClassTableCount();
+    _endthreadex(0);
+    return 0;
 }
 
 typedef struct deleteClassInfoByDateTimeArg
