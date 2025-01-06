@@ -154,6 +154,43 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this,&CMainMenueDlg::startGetClassTableCount,this,&CMainMenueDlg::getClassTableCount);
     QObject::connect(this->ui->pushButton_31,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableNextPage);
     QObject::connect(this->ui->pushButton_30,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableLastPage);
+    QObject::connect(this->ui->checkBox_8,&QCheckBox::toggled,this,&CMainMenueDlg::changeClassCurPageCheckBoxStatus);
+}
+
+typedef struct deleteClassInfoByDateTimeArg
+{
+    CMainMenueDlg* thiz;
+    QString acount;
+    QString createTime;
+    QString className;
+}DeleteClassInfoByDateTimeArg;
+
+void CMainMenueDlg::deleteClassInfoByDateTime(int row)
+{
+    //获取到同一行的创建时间
+    QString createTime = this->m_classCreateTimeVec.at(row)->text().trimmed();
+    qDebug()<<"createTime: "<<createTime;
+
+    QString className = this->m_classNameVec.at(row)->text().trimmed();
+
+    DeleteClassInfoByDateTimeArg* arg = new DeleteClassInfoByDateTimeArg();
+    arg->thiz = this;
+    arg->acount = this->m_acount;
+    arg->createTime = createTime;
+    arg->className = className;
+    _beginthreadex(nullptr,0,&CMainMenueDlg::threadDeleteClassInfoByDateTimeEntry,arg,0,nullptr);
+}
+
+unsigned WINAPI CMainMenueDlg::threadDeleteClassInfoByDateTimeEntry(LPVOID arg)
+{
+    DeleteClassInfoByDateTimeArg* dInfo = (DeleteClassInfoByDateTimeArg*)arg;
+    dInfo->thiz->m_mainMenueContorller->deleteClassInfoByDateTime(dInfo->acount,dInfo->createTime,dInfo->className);
+    //重新显示和请求数据
+    emit dInfo->thiz->startGetClassTableInfo();
+    dInfo->thiz->getClassTableCount();
+    delete dInfo;
+    _endthreadex(0);
+    return 0;
 }
 
 void CMainMenueDlg::showClassTableLastPage()
@@ -500,7 +537,7 @@ void CMainMenueDlg::bindClassOperators()
                              if(clickedBtn == btn)
                              {
                                  this->m_classCurPageIndex = 1;
-//                                 this->deleteClassInfoByDateTime(row);
+                                 this->deleteClassInfoByDateTime(row);
                                  break;
                              }
                          }
@@ -509,6 +546,18 @@ void CMainMenueDlg::bindClassOperators()
                  });
              }
          }
+    }
+}
+
+void CMainMenueDlg::changeClassCurPageCheckBoxStatus(bool status)
+{
+    for(int i = 0 ; i < this->m_classCheckVec.size();i++)
+    {
+       QList<QCheckBox*> ret =  this->m_classCheckVec.at(i)->findChildren<QCheckBox*>();
+       for(QCheckBox* check : ret)
+       {
+          check->setChecked(status);
+       }
     }
 }
 

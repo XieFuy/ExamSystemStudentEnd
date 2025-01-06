@@ -118,6 +118,13 @@ private:
     //拿到课程表的上一页数据
     void showClassTableLastPage();//显示课程表的上一页数据
 
+    //删除课程表单条记录
+    void deleteClassInfoByDateTime(int row);//删除课程表的单条记录
+    static unsigned WINAPI threadDeleteClassInfoByDateTimeEntry(LPVOID arg);
+
+    //将课程表当前页的所有选项进行设置状态
+    void changeClassCurPageCheckBoxStatus(bool status);
+
 private:
     Ui::CMainMenueDlg *ui;
 };
