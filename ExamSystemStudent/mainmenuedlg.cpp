@@ -165,7 +165,35 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this->ui->pushButton_32,&QPushButton::clicked,this,&CMainMenueDlg::deleteMultiClassInfo);
     QObject::connect(this,&CMainMenueDlg::startShowTestPaperTableInfo,this,&CMainMenueDlg::showTestPaperTableInfo);
     QObject::connect(this,&CMainMenueDlg::startShowTestPaperTableIndex,this,&CMainMenueDlg::showTestPaperTableIndex);
+    QObject::connect(this->ui->pushButton_34,&QPushButton::clicked,this,&CMainMenueDlg::showTestPaperTableNextPage);
 
+}
+
+void CMainMenueDlg::showTestPaperTableNextPage()
+{
+    if(this->m_testPaperCount == "0") //如果查询的结果集为空则不进行操作
+    {
+        return;
+    }
+
+    if(QString::number(this->m_testPaperCurPageIndex) == this->m_testPaperCount)
+    {
+        return;
+    }
+    //清除当前表中的记录
+    this->clearTestPaperTableUI();
+
+    //给当前页自增，并且不能超过总页
+    if(QString::number(this->m_testPaperCurPageIndex) != this->m_testPaperCount)
+    {
+        this->m_testPaperCurPageIndex += 1;
+    }
+
+    //清除选中项
+//    emit this->ui->checkBox_8->toggled(false);
+//    this->ui->checkBox_8->setChecked(false);
+    this->getTestPaperData();
+    this->getTestPaperTableCount();
 }
 
 void CMainMenueDlg::showTestPaperTableInfo(QVector<QVector<QString>>* ret)

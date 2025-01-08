@@ -20,8 +20,10 @@ int CMainMenueModel::getTestPaperTableCount(const char* acount)
     std::unique_ptr<char[]> sqlBuf(new char[1024000]);
     std::string sql;
     memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
-    sprintf(sqlBuf.get(),"SELECT \n\
-count(*)\n\
+    sprintf(sqlBuf.get(),"SELECT COUNT(*) AS distinct_testPaperName_count\n\
+FROM (\n\
+SELECT DISTINCT\n\
+tpi.`testPaperName`\n\
 FROM \n\
 `testPaperRelease` tpr\n\
 JOIN \n\
@@ -29,7 +31,7 @@ JOIN \n\
 JOIN \n\
 `joinClassStudentManeage` jcsm ON tpr.`teacherId` = jcsm.`teacherId`\n\
 WHERE \n\
-jcsm.`studentId` = '%s';",acount);
+jcsm.`studentId` = '%s') AS distinct_testPapers;",acount);
     sql = sqlBuf.get();
     int tableCount =  dbHelper->sqlQueryCount(sql,"ExamSystem"); //获取的是表的记录条数
     tableCount -= 1; //减去最上面的一条记录
@@ -59,7 +61,7 @@ std::vector<std::vector<std::string>> CMainMenueModel::getTestPaperData(const ch
     std::unique_ptr<char[]> sqlBuf(new char[1024000]);
     std::string sql;
     memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
-    sprintf(sqlBuf.get(),"SELECT \n\
+    sprintf(sqlBuf.get(),"SELECT DISTINCT\n\
 tpi.`testPaperName`,\n\
 tpr.`examStartTime`,\n\
 tpr.`examEndTime`,\n\

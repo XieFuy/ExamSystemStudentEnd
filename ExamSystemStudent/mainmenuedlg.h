@@ -162,6 +162,12 @@ private:
     static unsigned WINAPI threadGetTestPaperTableCountEntry(LPVOID arg);
 
     void showTestPaperTableIndex();
+
+    //拿取考试发布表的下一页数据
+    void showTestPaperTableNextPage(); //显示课程表的下一页
+
+    //拿到课程表的上一页数据
+    void showTestPaperTableLastPage();//显示课程表的上一页数据
 private:
     Ui::CMainMenueDlg *ui;
 };
