@@ -5,6 +5,20 @@ CMainMenueContorller::CMainMenueContorller()
  this->m_mainMenueModel = new CMainMenueModel();
 }
 
+int CMainMenueContorller::getTestPaperTableCount(QString acount)
+{
+    QByteArray acountArr = acount.toLocal8Bit();
+    const char* pAcount = acountArr.data();
+    return this->m_mainMenueModel->getTestPaperTableCount(pAcount);
+}
+
+std::vector<std::vector<std::string>> CMainMenueContorller::getTestPaperData(QString acount,int curIndex)
+{
+    QByteArray acountArr = acount.toLocal8Bit();
+    const char* pAcount = acountArr.data();
+    return this->m_mainMenueModel->getTestPaperData(pAcount,curIndex);
+}
+
 typedef struct deleteMultiClassInfoArg
 {
     CMainMenueContorller*thiz;

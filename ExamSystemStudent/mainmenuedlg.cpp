@@ -23,8 +23,11 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     this->m_acount = "";
     this->m_classCount = "";
     this->sortNumberClass = 0;
+    this->sortNumberTestPaper = 0;
     this->m_classCurPageIndex = 1;
     this->classIconIndex = 0;
+    this->m_testPaperCurPageIndex = 1;
+    this->m_testPaperCount = "";
     this->m_Event = CreateEvent(nullptr,FALSE,FALSE,nullptr);
     this->m_Event_2 = CreateEvent(nullptr,FALSE,FALSE,nullptr);
     //界面初始化的默认选中项
@@ -56,6 +59,8 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
         this->ui->pushButton_5->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
         this->ui->pushButton_6->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
 //        this->ui->pushButton_7->setStyleSheet("QPushButton{border:none;border:1px solid #faa046;color:#faa046;border-radius:20;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+        this->getTestPaperData();
+        this->getTestPaperTableCount();
     });
 
     QObject::connect(this->ui->pushButton_5,&QPushButton::clicked,[=](){
@@ -146,6 +151,8 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     });
     this->initJoinClassTableUI();
     this->initJoinClassTableContorl();
+    this->initTestPaperInfoUI();
+    this->initTestPaperInfoContorl();
 
     QObject::connect(this,&CMainMenueDlg::startShowClassTable,this,&CMainMenueDlg::showClassTableInfo);
     QObject::connect(this,&CMainMenueDlg::startShowClassIcon,this,&CMainMenueDlg::showClassIconUI);
@@ -156,7 +163,294 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this->ui->pushButton_30,&QPushButton::clicked,this,&CMainMenueDlg::showClassTableLastPage);
     QObject::connect(this->ui->checkBox_8,&QCheckBox::toggled,this,&CMainMenueDlg::changeClassCurPageCheckBoxStatus);
     QObject::connect(this->ui->pushButton_32,&QPushButton::clicked,this,&CMainMenueDlg::deleteMultiClassInfo);
+    QObject::connect(this,&CMainMenueDlg::startShowTestPaperTableInfo,this,&CMainMenueDlg::showTestPaperTableInfo);
+    QObject::connect(this,&CMainMenueDlg::startShowTestPaperTableIndex,this,&CMainMenueDlg::showTestPaperTableIndex);
 
+}
+
+void CMainMenueDlg::showTestPaperTableInfo(QVector<QVector<QString>>* ret)
+{
+    if(ret == nullptr)
+    {
+        return ;
+    }
+    //进行UI显示
+    this->clearTestPaperTableUI();
+   //将数据进行插入到表格中
+   for(int i = 0 ; i < ret->size(); i++)
+   {
+       //显示序号
+       QList<QCheckBox*> buttons = this->m_TestPaperCheckVec.at(i)->findChildren<QCheckBox*>();
+       for (QCheckBox *button : buttons) {
+           button->setVisible(true);
+       }
+
+       //显示试卷名称
+       QString str = ret->at(i).at(0);
+       this->m_TestPaperNameVec.at(i)->setText(str);
+
+       //显示开始时间
+       str = ret->at(i).at(1);
+       this->m_TestPaperStartTimeVec.at(i)->setText(str);
+
+       //显示结束时间
+       str = ret->at(i).at(2);
+       this->m_TestPaperEndTimeVec.at(i)->setText(str);
+
+       //显示总时长
+       str = ret->at(i).at(3);
+       this->m_TestPaperLongTimeVec.at(i)->setText(str);
+
+       //显示操作按钮
+       QList<QPushButton*> optButton = this->m_TestPaperOperationsVec.at(i)->findChildren<QPushButton*>();
+       for (QPushButton *button : optButton) {
+           button->setVisible(true);
+       }
+   }
+   if(ret != nullptr)
+   {
+       delete ret;
+   }
+   qDebug()<<"学生管理UI显示完成!";
+}
+
+void CMainMenueDlg::clearTestPaperTableUI()
+{
+    //隐藏序号
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        QList<QCheckBox*> buttons = this->m_TestPaperCheckVec.at(i)->findChildren<QCheckBox*>();
+        for (QCheckBox *button : buttons) {
+            button->setVisible(false);
+        }
+    }
+
+    //清除试卷名称
+    for (QLabel *button : this->m_TestPaperNameVec) {
+        button->setText("");
+    }
+
+    //清除开始时间
+    for (QLabel *button : this->m_TestPaperStartTimeVec) {
+        button->setText("");
+    }
+
+    //清除结束时间
+    for (QLabel *button : this->m_TestPaperEndTimeVec) {
+        button->setText("");
+    }
+
+    //清除总时长
+    for (QLabel *button : this->m_TestPaperLongTimeVec) {
+        button->setText("");
+    }
+
+    //清除操作
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        QList<QPushButton*> optButton = this->m_TestPaperOperationsVec.at(i)->findChildren<QPushButton*>();
+        for (QPushButton *button : optButton) {
+            button->setVisible(false);
+        }
+    }
+}
+
+//TODO:明天接着这里继续
+typedef struct getTestPaperDataArg{
+    QString acount;
+    int curIndex;
+    CMainMenueDlg* thiz;
+}GetTestPaperDataArg;
+
+void CMainMenueDlg::getTestPaperData()
+{
+    std::shared_ptr<GetTestPaperDataArg> arg = std::make_shared<GetTestPaperDataArg>();
+    arg->acount = this->m_acount;
+    arg->thiz = this;
+    arg->curIndex = this->m_testPaperCurPageIndex;
+    std::shared_ptr<GetTestPaperDataArg>* ptr = new std::shared_ptr<GetTestPaperDataArg>(arg);
+    _beginthreadex(nullptr,0,&CMainMenueDlg::threadGetTestPaperDataEntry,ptr,0,nullptr);
+}
+
+unsigned WINAPI CMainMenueDlg::threadGetTestPaperDataEntry(LPVOID arg)
+{
+    std::shared_ptr<GetTestPaperDataArg>* temp = static_cast<std::shared_ptr<GetTestPaperDataArg>*>(arg);
+    std::shared_ptr<GetTestPaperDataArg> gInfo = *temp;
+    //测试打印对象的引用计数
+    qDebug()<<"use_count: "<<gInfo.use_count();
+    std::vector<std::vector<std::string>> ret = gInfo->thiz->m_mainMenueContorller->getTestPaperData(gInfo->acount,gInfo->curIndex);
+    QVector<QVector<QString>>* result = new QVector<QVector<QString>>();
+    for(int i = 0 ; i < ret.size();i++)
+    {
+        QVector<QString> temp;
+        for(int j = 0 ; j < ret.at(i).size();j++)
+        {
+            //添加分钟
+            QString str = QString::fromLocal8Bit(ret.at(i).at(j).c_str());
+            if(j == 3)
+            {
+                str += "分钟";
+            }
+            temp.push_back(str);
+        }
+        result->push_back(temp);
+    }
+    //发送回显信号
+    emit  gInfo->thiz->startShowTestPaperTableInfo(result);
+    delete temp;
+    _endthreadex(0);
+    return 0;
+}
+
+void CMainMenueDlg::showTestPaperTableIndex()
+{
+    QString first = QString::number(this->m_testPaperCurPageIndex);
+    first += "/";
+    first += this->m_testPaperCount;
+    this->ui->label_64->setText(first);
+}
+
+typedef struct  getTestPaperTableCountArg{
+    QString acount;
+    CMainMenueDlg* thiz;
+}GetTestPaperTableCountArg;
+
+void CMainMenueDlg::getTestPaperTableCount()
+{
+    std::shared_ptr<GetTestPaperTableCountArg> arg = std::make_shared<GetTestPaperTableCountArg>();
+    arg->acount = this->m_acount;
+    arg->thiz = this;
+    std::shared_ptr<GetTestPaperTableCountArg>* temp = new std::shared_ptr<GetTestPaperTableCountArg>(arg);
+    _beginthreadex(nullptr,0,&CMainMenueDlg::threadGetTestPaperTableCountEntry,temp,0,nullptr);
+}
+
+unsigned WINAPI CMainMenueDlg::threadGetTestPaperTableCountEntry(LPVOID arg)
+{
+   std::shared_ptr<GetTestPaperTableCountArg>* temp = (std::shared_ptr<GetTestPaperTableCountArg>*)arg;
+   std::shared_ptr<GetTestPaperTableCountArg> gInfo = *temp;
+   int ret =  gInfo->thiz->m_mainMenueContorller->getTestPaperTableCount(gInfo->acount);
+   gInfo->thiz->m_testPaperCount = QString::number(ret);
+   //进行发送信号，进行显示总页数
+   emit gInfo->thiz->startShowTestPaperTableIndex();
+   delete temp;
+   _endthreadex(0);
+   return 0;
+}
+
+void CMainMenueDlg::initTestPaperInfoContorl()
+{
+    //初始化序号
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        QWidget* widget = new QWidget();
+        QHBoxLayout* layout = new QHBoxLayout();
+        widget->setLayout(layout);
+        QCheckBox* checkBox = new QCheckBox();
+        checkBox->setText(QString::number(++this->sortNumberTestPaper));
+        checkBox->setFont(QFont("黑体"));
+        checkBox->setStyleSheet("QCheckBox{margin-left:20px;}");
+        checkBox->setVisible(false);
+        layout->addWidget(checkBox);
+        checkBox->setParent(widget);
+        this->ui->tableWidget_3->setCellWidget(i,0,widget);
+        this->m_TestPaperCheckVec.push_back(widget);
+    }
+
+    //初始化试卷名称
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        QLabel* testName = new QLabel();
+        testName->setText("");
+        testName->setFont(QFont("黑体",12));
+        this->ui->tableWidget_3->setCellWidget(i,1,testName);
+        testName->setAlignment(Qt::AlignCenter);
+        this->m_TestPaperNameVec.push_back(testName);
+    }
+
+    //初始化开始考试时间
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        QLabel* testName = new QLabel();
+        testName->setText("");
+        testName->setFont(QFont("黑体",12));
+        this->ui->tableWidget_3->setCellWidget(i,2,testName);
+        testName->setAlignment(Qt::AlignCenter);
+        this->m_TestPaperStartTimeVec.push_back(testName);
+    }
+
+    //初始化结束考试时间
+    for(int i = 0 ; i < 8;i++)
+    {
+        QLabel* testName = new QLabel();
+        testName->setText("");
+        testName->setFont(QFont("黑体",12));
+        this->ui->tableWidget_3->setCellWidget(i,3,testName);
+        testName->setAlignment(Qt::AlignCenter);
+        this->m_TestPaperEndTimeVec.push_back(testName);
+    }
+
+    //初始化总时长
+    for(int i = 0 ; i < 8 ;i++)
+    {
+        QLabel* testName = new QLabel();
+        testName->setText("");
+        testName->setFont(QFont("黑体",12));
+        this->ui->tableWidget_3->setCellWidget(i,4,testName);
+        testName->setAlignment(Qt::AlignCenter);
+        this->m_TestPaperLongTimeVec.push_back(testName);
+    }
+
+
+    //初始化操作
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        QWidget* widget = new QWidget();
+        QPushButton* deleteBtn = new QPushButton("进入考试");
+        deleteBtn->setStyleSheet("QPushButton{border:none; border:1px solid #faa046; color:#faa046;border-radius:5;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+        deleteBtn->setParent(widget);
+//        QPushButton* release = new QPushButton("查看详情");
+//        release->setStyleSheet("QPushButton{border:none; border:1px solid #faa046; color:#faa046;border-radius:5;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
+//        release->setParent(widget);
+        deleteBtn->setGeometry(100,20,150,40);
+//        release->setGeometry(deleteBtn->width() + 30,deleteBtn->y(),150,40);
+        deleteBtn->setFont(QFont("黑体",12));
+//        release->setFont(QFont("黑体",12));
+        deleteBtn->setVisible(false);
+//        release->setVisible(false);
+        this->ui->tableWidget_3->setCellWidget(i,5,widget);
+        this->m_TestPaperOperationsVec.push_back(widget);
+    }
+
+    //this->bindClassOperators();
+}
+
+void CMainMenueDlg::initTestPaperInfoUI()
+{
+    this->ui->tableWidget_3->setRowCount(8);
+    this->ui->tableWidget_3->setColumnCount(6);
+    this->ui->tableWidget_3->horizontalHeader()->hide();
+    this->ui->tableWidget_3->verticalHeader()->hide();
+
+    //设置列宽
+    int width = this->ui->tableWidget_3->width();
+    int heigth = this->ui->tableWidget_3->height();
+    this->ui->tableWidget_3->setColumnWidth(0,width / 18);
+    this->ui->tableWidget_3->setColumnWidth(1,width / 5);
+    this->ui->tableWidget_3->setColumnWidth(2,width / 5);
+    this->ui->tableWidget_3->setColumnWidth(3,width / 5);
+    this->ui->tableWidget_3->setColumnWidth(4,width / 13);
+    this->ui->tableWidget_3->setColumnWidth(5,width / 4);
+
+    this->ui->tableWidget_3->setRowHeight(0,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(1,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(2,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(3,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(4,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(5,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(6,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(7,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(8,heigth/ 8);
+    this->ui->tableWidget_3->setRowHeight(9,heigth/ 8);
 }
 
 typedef struct deleteMultiClassInfoArg
@@ -1011,6 +1305,60 @@ CMainMenueDlg::~CMainMenueDlg()
         }
     }
     this->m_classOperationsVec.clear();
+
+    for(QWidget* widget : this->m_TestPaperCheckVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+    this->m_TestPaperCheckVec.clear();
+
+    for(QLabel* widget : this->m_TestPaperNameVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+    this->m_TestPaperNameVec.clear();
+
+    for(QLabel* widget : this->m_TestPaperStartTimeVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+    this->m_TestPaperStartTimeVec.clear();
+
+    for(QLabel* widget : this->m_TestPaperEndTimeVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+    this->m_TestPaperEndTimeVec.clear();
+
+    for(QLabel* widget : this->m_TestPaperLongTimeVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+    this->m_TestPaperLongTimeVec.clear();
+
+    for(QWidget* widget :  this->m_TestPaperOperationsVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+     this->m_TestPaperOperationsVec.clear();
 
     //如果关闭界面，接收头像信息的线程还在执行的话就等待接收后结束线程
     WaitForSingleObject(this->m_recvHeadThead,INFINITE); //找到退出崩溃的原因，因为关闭界面的时候，接收头像线程还在执行，但是UI已经释放导致异常

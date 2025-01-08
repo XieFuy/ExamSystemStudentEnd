@@ -10,6 +10,73 @@ CMainMenueModel::~CMainMenueModel()
 
 }
 
+int CMainMenueModel::getTestPaperTableCount(const char* acount)
+{
+    if(acount == nullptr)
+    {
+        return -1;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    std::string sql;
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    sprintf(sqlBuf.get(),"SELECT \n\
+count(*)\n\
+FROM \n\
+`testPaperRelease` tpr\n\
+JOIN \n\
+`testPaperInfo` tpi ON tpr.`testPaperId` = tpi.`testPaperId`\n\
+JOIN \n\
+`joinClassStudentManeage` jcsm ON tpr.`teacherId` = jcsm.`teacherId`\n\
+WHERE \n\
+jcsm.`studentId` = '%s';",acount);
+    sql = sqlBuf.get();
+    int tableCount =  dbHelper->sqlQueryCount(sql,"ExamSystem"); //获取的是表的记录条数
+    tableCount -= 1; //减去最上面的一条记录
+    int result = (tableCount / 8) ;
+
+    if(result < 0) //表示总的记录条数小于8
+    {
+         result += 1;
+    }else
+    {
+       int yuShu = tableCount - (result * 8);
+        if(yuShu >= 0)
+        {
+            result += 1;
+        }
+    }
+    return result;
+}
+
+std::vector<std::vector<std::string>> CMainMenueModel::getTestPaperData(const char* acount,int curIndex)
+{
+    if(acount == nullptr)
+    {
+        return std::vector<std::vector<std::string>>();
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    std::string sql;
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    sprintf(sqlBuf.get(),"SELECT \n\
+tpi.`testPaperName`,\n\
+tpr.`examStartTime`,\n\
+tpr.`examEndTime`,\n\
+tpr.`examLongTimeMinute`\n\
+FROM \n\
+`testPaperRelease` tpr\n\
+JOIN \n\
+`testPaperInfo` tpi ON tpr.`testPaperId` = tpi.`testPaperId`\n\
+JOIN \n\
+`joinClassStudentManeage` jcsm ON tpr.`teacherId` = jcsm.`teacherId`\n\
+ WHERE \n\
+jcsm.`studentId` = '%s' limit 8 offset %d;",acount,(curIndex - 1)*8);
+    sql = sqlBuf.get();
+    std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
+    return ret;
+}
+
 bool CMainMenueModel::deleteClassInfoByDateTime(const char* acount
                                ,const char* createTime,const char* className)
 {

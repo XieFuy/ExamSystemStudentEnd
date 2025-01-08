@@ -20,6 +20,8 @@ public :
     bool deleteClassInfoByDateTime(QString acount,QString createTime,QString className);
     bool deleteMultiClassInfo(QString acount,QList<QString>& createTimeLst,QList<QString>& classNameLst);
     static unsigned threadDeleteMultiClassInfo(LPVOID arg);
+    std::vector<std::vector<std::string>> getTestPaperData(QString acount,int curIndex);
+    int getTestPaperTableCount(QString acount);
  private:
     CMainMenueModel* m_mainMenueModel = nullptr;
 };

@@ -431,7 +431,7 @@ color:#50b8f7;
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QWidget" name="widget_3" native="true">
@@ -688,7 +688,7 @@ color:#50b8fd;
 }</string>
       </property>
       <property name="text">
-       <string>批量删除</string>
+       <string>批量退课</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_30">
@@ -778,22 +778,266 @@ color:#ffffff;
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>0</y>
+       <y>10</y>
        <width>1421</width>
        <height>861</height>
       </rect>
      </property>
-     <widget class="QLabel" name="label_5">
+     <widget class="QLabel" name="label_9">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>380</y>
-        <width>211</width>
-        <height>201</height>
+        <x>10</x>
+        <y>10</y>
+        <width>181</width>
+        <height>41</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>黑体</family>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>考试管理</string>
+       <string>考试信息管理</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_17" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>1391</width>
+        <height>80</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#widget_17
+{
+background-color: #F8FAF7;
+}</string>
+      </property>
+      <widget class="QLabel" name="label_56">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>71</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>序号</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_59">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>0</y>
+         <width>131</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>试卷名称</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_60">
+       <property name="geometry">
+        <rect>
+         <x>350</x>
+         <y>0</y>
+         <width>241</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>开始考试时间</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_61">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>10</y>
+         <width>211</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>结束考试时间</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_62">
+       <property name="geometry">
+        <rect>
+         <x>860</x>
+         <y>10</y>
+         <width>191</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>总时长</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_63">
+       <property name="geometry">
+        <rect>
+         <x>980</x>
+         <y>0</y>
+         <width>401</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>操作</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>1391</width>
+        <height>641</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_33">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>820</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#pushButton_33
+{
+border:1px solid #646465;
+color:#646465;
+}
+
+#pushButton_33:hover
+{
+background-color: #646465;
+color:#ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>上一页</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_64">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>820</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>黑体</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>6/6</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_34">
+      <property name="geometry">
+       <rect>
+        <x>780</x>
+        <y>820</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#pushButton_34
+{
+border:1px solid #646465;
+color:#646465;
+}
+
+#pushButton_34:hover
+{
+background-color: #646465;
+color:#ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>下一页</string>
       </property>
      </widget>
     </widget>

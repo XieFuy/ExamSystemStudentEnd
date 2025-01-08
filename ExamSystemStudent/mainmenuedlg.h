@@ -43,6 +43,8 @@ signals:
     void startGetClassTableInfo();
     void startShowClassTableIndex();
     void startGetClassTableCount();
+    void startShowTestPaperTableInfo(QVector<QVector<QString>>* ret);
+    void startShowTestPaperTableIndex();
 private:
 //    CExitLoginDlg* m_exitLoginDlg = nullptr;
     CMainMenueContorller* m_mainMenueContorller = nullptr; //主菜单页面控制层
@@ -65,6 +67,17 @@ private:
     HANDLE m_Event;
     HANDLE m_Event_2;
     QString m_classCount;
+
+    //考试管理部分
+    int sortNumberTestPaper;
+    QVector<QWidget*> m_TestPaperCheckVec;
+    QVector<QLabel*> m_TestPaperNameVec;
+    QVector<QLabel*> m_TestPaperStartTimeVec;
+    QVector<QLabel*> m_TestPaperEndTimeVec;
+    QVector<QLabel*> m_TestPaperLongTimeVec;
+    QVector<QWidget*> m_TestPaperOperationsVec;
+    int m_testPaperCurPageIndex;
+    QString m_testPaperCount;
 private:
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 
@@ -128,6 +141,27 @@ private:
     //实现课程表的批量删除
     void deleteMultiClassInfo();
     static unsigned WINAPI threadDeleteMultiClassInfo(LPVOID arg);
+
+    //初始化考试管理信息表Ui
+    void initTestPaperInfoUI();
+
+    //初始化考试管理信息表Ui控件
+    void initTestPaperInfoContorl();
+
+
+    void getTestPaperData();
+    static unsigned WINAPI threadGetTestPaperDataEntry(LPVOID arg);
+
+    //显示考试发布信息
+    void showTestPaperTableInfo(QVector<QVector<QString>>* ret);
+
+    //清除考试信息Ui
+    void clearTestPaperTableUI();
+
+    void getTestPaperTableCount();//进行获取课程表所有符合条件的总页数
+    static unsigned WINAPI threadGetTestPaperTableCountEntry(LPVOID arg);
+
+    void showTestPaperTableIndex();
 private:
     Ui::CMainMenueDlg *ui;
 };
