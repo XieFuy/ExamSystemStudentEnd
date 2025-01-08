@@ -166,7 +166,7 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this,&CMainMenueDlg::startShowTestPaperTableInfo,this,&CMainMenueDlg::showTestPaperTableInfo);
     QObject::connect(this,&CMainMenueDlg::startShowTestPaperTableIndex,this,&CMainMenueDlg::showTestPaperTableIndex);
     QObject::connect(this->ui->pushButton_34,&QPushButton::clicked,this,&CMainMenueDlg::showTestPaperTableNextPage);
-
+    QObject::connect(this->ui->pushButton_33,&QPushButton::clicked,this,&CMainMenueDlg::showTestPaperTableLastPage);
 }
 
 void CMainMenueDlg::showTestPaperTableNextPage()
@@ -190,6 +190,30 @@ void CMainMenueDlg::showTestPaperTableNextPage()
     }
 
     //清除选中项
+//    emit this->ui->checkBox_8->toggled(false);
+//    this->ui->checkBox_8->setChecked(false);
+    this->getTestPaperData();
+    this->getTestPaperTableCount();
+}
+
+void CMainMenueDlg::showTestPaperTableLastPage()
+{
+    if(this->m_testPaperCount == "0")
+    {
+        return;
+    }
+    //防止恶意刷新
+    if(this->m_testPaperCurPageIndex <= 1)
+    {
+        return ;
+    }
+    //清除当前表中的记录
+    this->clearTestPaperTableUI();
+    //给当前页递减，并且不能低于1
+    if(this->m_testPaperCurPageIndex > 1)
+    {
+       this->m_testPaperCurPageIndex -= 1;
+    }
 //    emit this->ui->checkBox_8->toggled(false);
 //    this->ui->checkBox_8->setChecked(false);
     this->getTestPaperData();
