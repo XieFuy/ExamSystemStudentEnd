@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include "joinclassdlg.h"
+#include "infomationdlg.h"
 
 namespace Ui {
 class CMainMenueDlg;  //主菜单管理页面
@@ -78,6 +79,12 @@ private:
     QVector<QWidget*> m_TestPaperOperationsVec;
     int m_testPaperCurPageIndex;
     QString m_testPaperCount;
+    QVector<QLabel*> m_TestPaperCreatorVec;
+    QVector<QString> m_classId; //用于存储每一份试卷对应的classId
+    QVector<QString> m_teacherId;//用于存储每一份发布的试卷的教师id
+
+    CInfoMationDlg* m_infomationdlg = nullptr;
+
 private:
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 
@@ -168,6 +175,13 @@ private:
 
     //拿到课程表的上一页数据
     void showTestPaperTableLastPage();//显示课程表的上一页数据
+
+    //学生点击进入考试，出现考试题型
+    void showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime);
+
+    //绑定考试信息表的按钮操作
+    void bindTestPaperOperators();
+
 private:
     Ui::CMainMenueDlg *ui;
 };

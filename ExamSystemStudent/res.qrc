@@ -14,5 +14,6 @@
         <file>icons/t_min.png</file>
         <file>icons/test.png</file>
         <file>icons/winIcon.png</file>
+        <file>icons/infomation.png</file>
     </qresource>
 </RCC>

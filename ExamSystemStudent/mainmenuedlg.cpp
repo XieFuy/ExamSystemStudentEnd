@@ -169,6 +169,70 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     QObject::connect(this->ui->pushButton_33,&QPushButton::clicked,this,&CMainMenueDlg::showTestPaperTableLastPage);
 }
 
+void CMainMenueDlg::bindTestPaperOperators()
+{
+    for(QVector<QWidget*>::iterator pos = this->m_TestPaperOperationsVec.begin(); pos != this->m_TestPaperOperationsVec.end();pos++)
+    {
+         QList<QPushButton*> ret = (*pos)->findChildren<QPushButton*>();
+         for(QPushButton* btn : ret)
+         {
+             if(btn->text() == "进入考试")
+             {
+                 //绑定的删除操作的槽函数
+                 QObject::connect(btn,&QPushButton::clicked,[=](){
+                     //进行遍历是哪一个按钮，并获取对应的行号
+                     int row = 0;
+                     for(int i = 0 ; i < this->m_TestPaperOperationsVec.size();i++)
+                     {
+                         QList<QPushButton*> buttons = this->m_TestPaperOperationsVec.at(i)->findChildren<QPushButton*>();
+                         for(QPushButton* clickedBtn: buttons)
+                         {
+                             if(clickedBtn == btn)
+                             {
+                                 QString classId = this->m_classId.at(row);
+                                 QString teacherId = this->m_teacherId.at(row);
+                                 QString startTime = this->m_TestPaperStartTimeVec.at(row)->text().trimmed();
+                                 QString endTime = this->m_TestPaperEndTimeVec.at(row)->text().trimmed();
+                                 QString longTime = this->m_TestPaperLongTimeVec.at(row)->text().trimmed();
+                                 //进行考前提示
+                                 showInfomationDlg(classId,teacherId,startTime,endTime,longTime);
+                                 break;
+                             }
+                         }
+                         row++;
+                     }
+                 });
+             }
+         }
+    }
+}
+
+void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime)
+{ 
+    if(this->m_infomationdlg == nullptr)  //找到崩溃原因，要先进行显示父窗口，再进行释放类内的对象
+    {
+       this->m_infomationdlg = new CInfoMationDlg();
+       this->m_infomationdlg->move((this->width() - this->m_infomationdlg->width()) / 2, (this->height() - this->m_infomationdlg->height()) / 2);
+       this->m_infomationdlg->classId = classId;
+       this->m_infomationdlg->teacherId = teacherId;
+       this->m_infomationdlg->startTime = startTime;
+       this->m_infomationdlg->endTime = endTime;
+       this->m_infomationdlg->longTime = longTime;
+       this->m_infomationdlg->show();
+       this->hide();
+
+       //监听如果执行的是执行返回的话，不进入考试则返回到主界面
+        QObject::connect(this->m_infomationdlg,&CInfoMationDlg::rejected,[=](){
+           if(this->m_infomationdlg != nullptr)
+           {
+               this->show();
+               delete this->m_infomationdlg;
+               this->m_infomationdlg = nullptr;
+           }
+        });
+    }
+}
+
 void CMainMenueDlg::showTestPaperTableNextPage()
 {
     if(this->m_testPaperCount == "0") //如果查询的结果集为空则不进行操作
@@ -228,6 +292,8 @@ void CMainMenueDlg::showTestPaperTableInfo(QVector<QVector<QString>>* ret)
     }
     //进行UI显示
     this->clearTestPaperTableUI();
+    this->m_classId.clear();
+    this->m_teacherId.clear();
    //将数据进行插入到表格中
    for(int i = 0 ; i < ret->size(); i++)
    {
@@ -252,6 +318,18 @@ void CMainMenueDlg::showTestPaperTableInfo(QVector<QVector<QString>>* ret)
        //显示总时长
        str = ret->at(i).at(3);
        this->m_TestPaperLongTimeVec.at(i)->setText(str);
+
+       //显示出题人
+       str = ret->at(i).at(4);
+       this->m_TestPaperCreatorVec.at(i)->setText(str);
+
+       //存储当前页的课程id
+       str = ret->at(i).at(5);
+       this->m_teacherId.push_back(str);
+
+       //存储当前页的职工id
+       str = ret->at(i).at(6);
+       this->m_classId.push_back(str);
 
        //显示操作按钮
        QList<QPushButton*> optButton = this->m_TestPaperOperationsVec.at(i)->findChildren<QPushButton*>();
@@ -294,6 +372,11 @@ void CMainMenueDlg::clearTestPaperTableUI()
 
     //清除总时长
     for (QLabel *button : this->m_TestPaperLongTimeVec) {
+        button->setText("");
+    }
+
+    //清除出题人
+    for (QLabel *button : this->m_TestPaperCreatorVec) {
         button->setText("");
     }
 
@@ -400,7 +483,7 @@ void CMainMenueDlg::initTestPaperInfoContorl()
         QCheckBox* checkBox = new QCheckBox();
         checkBox->setText(QString::number(++this->sortNumberTestPaper));
         checkBox->setFont(QFont("黑体"));
-        checkBox->setStyleSheet("QCheckBox{margin-left:20px;}");
+//        checkBox->setStyleSheet("QCheckBox{margin-left:5px;}");
         checkBox->setVisible(false);
         layout->addWidget(checkBox);
         checkBox->setParent(widget);
@@ -452,6 +535,16 @@ void CMainMenueDlg::initTestPaperInfoContorl()
         this->m_TestPaperLongTimeVec.push_back(testName);
     }
 
+    //初始化出题人
+    for(int i = 0 ; i < 8 ;i++)
+    {
+        QLabel* testName = new QLabel();
+        testName->setText("");
+        testName->setFont(QFont("黑体",12));
+        this->ui->tableWidget_3->setCellWidget(i,5,testName);
+        testName->setAlignment(Qt::AlignCenter);
+        this->m_TestPaperCreatorVec.push_back(testName);
+    }
 
     //初始化操作
     for(int i = 0 ; i < 8 ; i++)
@@ -463,35 +556,36 @@ void CMainMenueDlg::initTestPaperInfoContorl()
 //        QPushButton* release = new QPushButton("查看详情");
 //        release->setStyleSheet("QPushButton{border:none; border:1px solid #faa046; color:#faa046;border-radius:5;}QPushButton:hover{border:1px solid #50b8f7;color:#50b8f7;}");
 //        release->setParent(widget);
-        deleteBtn->setGeometry(100,20,150,40);
+        deleteBtn->setGeometry(50,20,150,40);
 //        release->setGeometry(deleteBtn->width() + 30,deleteBtn->y(),150,40);
         deleteBtn->setFont(QFont("黑体",12));
 //        release->setFont(QFont("黑体",12));
         deleteBtn->setVisible(false);
 //        release->setVisible(false);
-        this->ui->tableWidget_3->setCellWidget(i,5,widget);
+        this->ui->tableWidget_3->setCellWidget(i,6,widget);
         this->m_TestPaperOperationsVec.push_back(widget);
     }
 
-    //this->bindClassOperators();
+    this->bindTestPaperOperators();
 }
 
 void CMainMenueDlg::initTestPaperInfoUI()
 {
     this->ui->tableWidget_3->setRowCount(8);
-    this->ui->tableWidget_3->setColumnCount(6);
+    this->ui->tableWidget_3->setColumnCount(7);
     this->ui->tableWidget_3->horizontalHeader()->hide();
     this->ui->tableWidget_3->verticalHeader()->hide();
 
     //设置列宽
     int width = this->ui->tableWidget_3->width();
     int heigth = this->ui->tableWidget_3->height();
-    this->ui->tableWidget_3->setColumnWidth(0,width / 18);
+    this->ui->tableWidget_3->setColumnWidth(0,width / 25);
     this->ui->tableWidget_3->setColumnWidth(1,width / 5);
     this->ui->tableWidget_3->setColumnWidth(2,width / 5);
     this->ui->tableWidget_3->setColumnWidth(3,width / 5);
     this->ui->tableWidget_3->setColumnWidth(4,width / 13);
-    this->ui->tableWidget_3->setColumnWidth(5,width / 4);
+    this->ui->tableWidget_3->setColumnWidth(5,width / 10);
+    this->ui->tableWidget_3->setColumnWidth(6,width / 6);
 
     this->ui->tableWidget_3->setRowHeight(0,heigth/ 8);
     this->ui->tableWidget_3->setRowHeight(1,heigth/ 8);
@@ -1402,6 +1496,15 @@ CMainMenueDlg::~CMainMenueDlg()
         }
     }
     this->m_TestPaperLongTimeVec.clear();
+
+    for(QLabel* widget : this-> m_TestPaperCreatorVec)
+    {
+        if(widget != nullptr)
+        {
+            delete widget;
+        }
+    }
+    this-> m_TestPaperCreatorVec.clear();
 
     for(QWidget* widget :  this->m_TestPaperOperationsVec)
     {

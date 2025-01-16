@@ -842,7 +842,7 @@ background-color: #F8FAF7;
       <widget class="QLabel" name="label_59">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>120</x>
          <y>0</y>
          <width>131</width>
          <height>80</height>
@@ -886,7 +886,7 @@ background-color: #F8FAF7;
       <widget class="QLabel" name="label_61">
        <property name="geometry">
         <rect>
-         <x>660</x>
+         <x>650</x>
          <y>10</y>
          <width>211</width>
          <height>61</height>
@@ -908,7 +908,7 @@ background-color: #F8FAF7;
       <widget class="QLabel" name="label_62">
        <property name="geometry">
         <rect>
-         <x>860</x>
+         <x>840</x>
          <y>10</y>
          <width>191</width>
          <height>61</height>
@@ -930,9 +930,9 @@ background-color: #F8FAF7;
       <widget class="QLabel" name="label_63">
        <property name="geometry">
         <rect>
-         <x>980</x>
+         <x>1160</x>
          <y>0</y>
-         <width>401</width>
+         <width>201</width>
          <height>80</height>
         </rect>
        </property>
@@ -944,6 +944,28 @@ background-color: #F8FAF7;
        </property>
        <property name="text">
         <string>操作</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_65">
+       <property name="geometry">
+        <rect>
+         <x>970</x>
+         <y>10</y>
+         <width>191</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>黑体</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>出题人</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

@@ -11,6 +11,10 @@ CONFIG += c++11
 SOURCES += \
     clientsocket.cpp \
     dbhelper.cpp \
+    examcontorller.cpp \
+    examdlg.cpp \
+    exammodel.cpp \
+    infomationdlg.cpp \
     joinclassdlg.cpp \
     logincontorller.cpp \
     loginmodel.cpp \
@@ -28,6 +32,10 @@ SOURCES += \
 HEADERS += \
     DBHelper.h \
     clientsocket.h \
+    examcontorller.h \
+    examdlg.h \
+    exammodel.h \
+    infomationdlg.h \
     joinclassdlg.h \
     logincontorller.h \
     loginmodel.h \
@@ -42,6 +50,8 @@ HEADERS += \
     widget.h
 
 FORMS += \
+    examdlg.ui \
+    infomationdlg.ui \
     joinclassdlg.ui \
     mainmenuedlg.ui \
     namechangedlg.ui \

@@ -65,14 +65,19 @@ std::vector<std::vector<std::string>> CMainMenueModel::getTestPaperData(const ch
 tpi.`testPaperName`,\n\
 tpr.`examStartTime`,\n\
 tpr.`examEndTime`,\n\
-tpr.`examLongTimeMinute`\n\
+tpr.`examLongTimeMinute`,\n\
+ti.`name`,\n\
+tpr.`teacherId`,\n\
+tpr.`classId`\n\
 FROM \n\
 `testPaperRelease` tpr\n\
 JOIN \n\
 `testPaperInfo` tpi ON tpr.`testPaperId` = tpi.`testPaperId`\n\
 JOIN \n\
 `joinClassStudentManeage` jcsm ON tpr.`teacherId` = jcsm.`teacherId`\n\
- WHERE \n\
+JOIN\n\
+`TeacherInfo` ti ON ti.`teacherId` = tpr.`teacherId`\n\
+WHERE \n\
 jcsm.`studentId` = '%s' limit 8 offset %d;",acount,(curIndex - 1)*8);
     sql = sqlBuf.get();
     std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
