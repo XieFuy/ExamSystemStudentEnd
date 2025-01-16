@@ -5,6 +5,81 @@ CExamModel::CExamModel()
 
 }
 
+std::vector<std::vector<std::string>> CExamModel::getCurIndexShortAnswerChoice(const char* testPaperId
+                             ,int curIndex)
+{
+    if(testPaperId == nullptr)
+    {
+        return std::vector<std::vector<std::string>>();
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    char* sqlBuf = new char[1024000];
+    memset(sqlBuf,'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf,"select `question` from `shortAnswer`\n\
+where `testPaperId` = '%s' order by `order` limit 1 offset %d;",testPaperId,(curIndex - 1));
+    sql = sqlBuf;
+    std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
+    delete[] sqlBuf;
+    return ret;
+}
+
+std::vector<std::vector<std::string>> CExamModel::getCurIndexJudegChoice(const char* testPaperId
+                                                             ,int curIndex)
+{
+    if(testPaperId == nullptr)
+    {
+        return std::vector<std::vector<std::string>>();
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    char* sqlBuf = new char[1024000];
+    memset(sqlBuf,'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf,"select `question`,`sessionTrue`,`sessionFalse` from `judge`\n\
+where `testPaperId` = '%s' order by `order` limit 1 offset %d;",testPaperId,(curIndex - 1));
+    sql = sqlBuf;
+    std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
+    delete[] sqlBuf;
+    return ret;
+}
+
+std::vector<std::vector<std::string>> CExamModel::getCurIndexMultiChoice(const char* testPaperId
+                                                              ,int CurIndex)
+{
+    if(testPaperId == nullptr)
+    {
+        return std::vector<std::vector<std::string>>();
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    char* sqlBuf = new char[1024000];
+    memset(sqlBuf,'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf,"select `question`,`sessionA`,`sessionB`,`sessionC`,`sessionD`,`sessionE`,`sessionF` from `multiChoice`\n\
+where `testPaperId` = '%s' order by `order` limit 1 offset %d;",testPaperId,(CurIndex - 1));
+    sql = sqlBuf;
+    std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
+    delete[] sqlBuf;
+    return ret;
+}
+
+std::vector<std::vector<std::string>> CExamModel::getCurIndexSignalChoice(const char* testPaperId,int curIndex)
+{
+    if(testPaperId == nullptr)
+    {
+        return std::vector<std::vector<std::string>>();
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    char* sqlBuf = new char[1024000];
+    memset(sqlBuf,'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf,"select `question`,`sessionA`,`sessionB`,`sessionC`,`sessionD` from `singleChoice`\n\
+where `testPaperId` = '%s' order by `order` limit 1 offset %d;",testPaperId,(curIndex - 1));
+    sql = sqlBuf;
+    std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
+    delete[] sqlBuf;
+    return ret;
+}
+
 int CExamModel::getShortAnswerCount(const char* testPaperId)
 {
     if(testPaperId == nullptr)

@@ -5,6 +5,39 @@ CExamContorller::CExamContorller()
  this->m_model = new CExamModel();
 }
 
+std::vector<std::vector<std::string>> CExamContorller::getCurIndexShortAnswerChoice(QString testPaperId
+                             ,int curIndex)
+{
+    QByteArray testPaperIdArr  = testPaperId.toLocal8Bit();
+    const char* pTestPaperId = testPaperIdArr.data();
+    return this->m_model->getCurIndexShortAnswerChoice(pTestPaperId,curIndex);
+}
+
+std::vector<std::vector<std::string>> CExamContorller::getCurIndexJudegChoice(QString testPaperId
+                                                             ,int curIndex)
+{
+    QByteArray testPaperIdArr  = testPaperId.toLocal8Bit();
+    const char* pTestPaperId = testPaperIdArr.data();
+    return this->m_model->getCurIndexJudegChoice(pTestPaperId,curIndex);
+}
+
+std::vector<std::vector<std::string>> CExamContorller::getCurIndexMultiChoice(QString testPaperId
+                                                              ,int CurIndex)
+{
+    QByteArray testPaperIdArr  = testPaperId.toLocal8Bit();
+    const char* pTestPaperId = testPaperIdArr.data();
+    return this->m_model->getCurIndexMultiChoice(pTestPaperId,CurIndex);
+}
+
+std::vector<std::vector<std::string>> CExamContorller::getCurIndexSignalChoice
+                                                       (QString testPaperId,
+                                                        int CurIndex)
+{
+    QByteArray testPaperIdArr  = testPaperId.toLocal8Bit();
+    const char* pTestPaperId = testPaperIdArr.data();
+    return this->m_model->getCurIndexSignalChoice(pTestPaperId,CurIndex);
+}
+
 int CExamContorller::getShortAnswerCount(QString testPaperId)
 {
     QByteArray testPaperIdArr  = testPaperId.toLocal8Bit();

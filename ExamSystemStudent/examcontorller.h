@@ -21,6 +21,14 @@ public:
     int getMultiChoiceCount(QString testPaperId);
     int getJudgeChoiceCount(QString testPaperId);
     int getShortAnswerCount(QString testPaperId);
+    std::vector<std::vector<std::string>> getCurIndexSignalChoice(QString testPaperId
+                                                                  ,int CurIndex);
+    std::vector<std::vector<std::string>> getCurIndexMultiChoice(QString testPaperId
+                                                                  ,int CurIndex);
+    std::vector<std::vector<std::string>> getCurIndexJudegChoice(QString testPaperId
+                                                                 ,int curIndex);
+    std::vector<std::vector<std::string>> getCurIndexShortAnswerChoice(QString testPaperId
+                                 ,int curIndex);
 };
 
 #endif // CEXAMCONTORLLER_H

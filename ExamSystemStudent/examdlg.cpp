@@ -18,6 +18,10 @@ CExamDlg::CExamDlg(QWidget *parent) :
     this->multiChoiceCount = 0;
     this->judgeCount = 0;
     this->shortAnswerCount = 0;
+    this->judgeChoiceCurIndex = 1;
+    this->signalChoiceCurIndex = 1;
+    this->multiChoiceCurIndex = 1;
+    this->shortAnswerCurIndex = 1;
     QObject::connect(this->ui->pushButton,&QPushButton::clicked,[=](){
         this->ui->stackedWidget->setCurrentIndex(0);
         this->ui->pushButton->setStyleSheet("QPushButton{border:none;color:#FFFFFF;  background-color:#f7115b;}");
@@ -25,6 +29,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getSignalChoiceCount();
+        this->getCurIndexSignalChoice();
     });
 
     QObject::connect(this->ui->pushButton_2,&QPushButton::clicked,[=](){
@@ -34,7 +39,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getMultiChoiceCount();
-//        this->getCurIndexMultiChoice();
+        this->getCurIndexMultiChoice();
     });
 
     QObject::connect(this->ui->pushButton_3,&QPushButton::clicked,[=](){
@@ -44,7 +49,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_2->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getJudgeChoiceCount();
-//        this->getCurIndexJudegChoice();
+        this->getCurIndexJudegChoice();
     });
 
     QObject::connect(this->ui->pushButton_4,&QPushButton::clicked,[=](){
@@ -54,7 +59,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_2->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getShortAnswerCount();
-//        this->getCurIndexShortAnswerChoice();
+        this->getCurIndexShortAnswerChoice();
     });
 
     //TODO:明天接着这里继续
@@ -230,8 +235,249 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this,&CExamDlg::startShowMultiMenueBtn,this,&CExamDlg::showMultiMenueBtn);
     QObject::connect(this,&CExamDlg::startShowJudgeMenueBtn,this,&CExamDlg::showJudgeMenueBtn);
     QObject::connect(this,&CExamDlg::startShowShortAnswerBtn,this,&CExamDlg::showSHortAnswerBtn);
+
+    QObject::connect(this,&CExamDlg::startShowSignalChoice,this,&CExamDlg::showSignalChoice);
+    QObject::connect(this,&CExamDlg::startShowMultiChoice,this,&CExamDlg::showMultiChoice);
+    QObject::connect(this,&CExamDlg::startShowJudgeChoice,this,&CExamDlg::showJudgeChoice);
+    QObject::connect(this,&CExamDlg::startShowShortAnswerChoice,this,&CExamDlg::showShortAnswer);
     // Example: Start countdown for 5 minutes (300 seconds)
     startCountdown(120);
+}
+
+void CExamDlg::showShortAnswer(QVector<QVector<QString>>* ret)
+{
+    if(ret == nullptr)
+    {
+        return ;
+    }
+    //显示题干
+    this->ui->textEdit->setText(ret->at(0).at(0));
+
+    delete ret;
+}
+
+void CExamDlg::getCurIndexShortAnswerChoice()
+{
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetCurIndexShortAnswerChoice,this,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetCurIndexShortAnswerChoice(LPVOID arg)
+{
+    CExamDlg* thiz = (CExamDlg*)arg;
+    std::vector<std::vector<std::string>> ret =  thiz->m_contorller->getCurIndexShortAnswerChoice(thiz->testPaperId,thiz->shortAnswerCurIndex);
+
+    QVector<QVector<QString>>* result = new QVector<QVector<QString>>();
+    for(int i = 0 ; i < ret.size();i++)
+    {
+        QVector<QString> temp;
+        for(int j = 0 ; j < ret.at(i).size();j++)
+        {
+            QString str = QString::fromLocal8Bit(ret.at(i).at(j).c_str());
+            temp.push_back(str);
+        }
+        result->push_back(temp);
+    }
+    emit thiz->startShowShortAnswerChoice(result);
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::DynemicShowJudgeChoice()
+{
+    this->ui->radioButton_5->move(this->ui->verticalLayoutWidget_3->x(),this->ui->verticalLayoutWidget_3->height() + this->ui->verticalLayoutWidget_3->y() + 10);
+    this->ui->radioButton_6->move(this->ui->radioButton_5->x(),this->ui->radioButton_5->y() + this->ui->radioButton_5->height() + 10);
+}
+
+void CExamDlg::showJudgeChoice(QVector<QVector<QString>>* ret)
+{
+    if(ret == nullptr)
+    {
+        return ;
+    }
+    //显示题干
+    this->ui->label_20->setText(ret->at(0).at(0));
+    this->ui->verticalLayoutWidget_3->adjustSize();
+    this->DynemicShowJudgeChoice();
+
+    //显示A选项
+    this->ui->radioButton_5->setText(ret->at(0).at(1));
+
+    //显示B选项
+    this->ui->radioButton_6->setText(ret->at(0).at(2));
+
+    delete ret;
+}
+
+void CExamDlg::getCurIndexJudegChoice()
+{
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetCurIndexJudegChoice,this,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetCurIndexJudegChoice(LPVOID arg)
+{
+    CExamDlg* thiz = (CExamDlg*)arg;
+    std::vector<std::vector<std::string>> ret =  thiz->m_contorller->getCurIndexJudegChoice(thiz->testPaperId,thiz->judgeChoiceCurIndex);
+
+    QVector<QVector<QString>>* result = new QVector<QVector<QString>>();
+    for(int i = 0 ; i < ret.size();i++)
+    {
+        QVector<QString> temp;
+        for(int j = 0 ; j < ret.at(i).size();j++)
+        {
+            QString str = QString::fromLocal8Bit(ret.at(i).at(j).c_str());
+            temp.push_back(str);
+        }
+        result->push_back(temp);
+    }
+    emit thiz->startShowJudgeChoice(result);
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::DynemicShowMultiChoice()
+{
+    //进行设置第一个选项的位置
+    this->ui->checkBox->move(this->ui->verticalLayoutWidget_2->x(),this->ui->verticalLayoutWidget_2->height() + this->ui->verticalLayoutWidget_2->y() + 10);
+    this->ui->label_12->move(this->ui->checkBox->x() - 50,this->ui->checkBox->y());
+    this->ui->checkBox_2->move(this->ui->checkBox->x(),this->ui->checkBox->y() + this->ui->checkBox->height() + 1);
+    this->ui->label_13->move(this->ui->checkBox_2->x() - 50,this->ui->checkBox_2->y());
+    this->ui->checkBox_3->move(this->ui->checkBox_2->x(),this->ui->checkBox_2->y() + this->ui->checkBox_2->height() + 1);
+    this->ui->label_14->move(this->ui->checkBox_3->x() - 50,this->ui->checkBox_3->y());
+    this->ui->checkBox_4->move(this->ui->checkBox_3->x(),this->ui->checkBox_3->y() + this->ui->checkBox_3->height() + 1);
+    this->ui->label_15->move(this->ui->checkBox_4->x() - 50,this->ui->checkBox_4->y());
+
+    this->ui->checkBox_5->move(this->ui->checkBox_4->x(),this->ui->checkBox_4->y() + this->ui->checkBox_4->height() + 1);
+    this->ui->label_16->move(this->ui->checkBox_5->x() - 50,this->ui->checkBox_5->y());
+
+    this->ui->checkBox_6->move(this->ui->checkBox_5->x(),this->ui->checkBox_5->y() + this->ui->checkBox_5->height() + 1);
+    this->ui->label_17->move(this->ui->checkBox_6->x() - 50,this->ui->checkBox_6->y());
+
+}
+
+void CExamDlg::showMultiChoice(QVector<QVector<QString>>* ret)
+{
+    if(ret == nullptr)
+    {
+        return ;
+    }
+    //显示题干
+
+    this->ui->label_11->setText(ret->at(0).at(0));
+    this->ui->verticalLayoutWidget_2->adjustSize();
+    this->DynemicShowMultiChoice();
+    //显示A选项
+    this->ui->checkBox->setText(ret->at(0).at(1));
+
+    //显示B选项
+    this->ui->checkBox_2->setText(ret->at(0).at(2));
+
+    //显示C选项
+    this->ui->checkBox_3->setText(ret->at(0).at(3));
+
+    //显示D选项
+    this->ui->checkBox_4->setText(ret->at(0).at(4));
+
+    //显示E选项
+    this->ui->checkBox_5->setText(ret->at(0).at(5));
+
+    //显示F选项
+    this->ui->checkBox_6->setText(ret->at(0).at(6));
+
+    delete ret;
+}
+
+
+void  CExamDlg::DynemicShowSignalChoice()
+{
+    //进行设置第一个选项的位置
+    this->ui->radioButton->move(this->ui->verticalLayoutWidget->x(),this->ui->verticalLayoutWidget->height() + this->ui->verticalLayoutWidget->y() + 10);
+    this->ui->label_7->move(this->ui->radioButton->x() - 50,this->ui->radioButton->y());
+    this->ui->radioButton_2->move(this->ui->radioButton->x(),this->ui->radioButton->y() + this->ui->radioButton->height() + 10);
+    this->ui->label_8->move(this->ui->radioButton_2->x() - 50,this->ui->radioButton_2->y());
+    this->ui->radioButton_3->move(this->ui->radioButton_2->x(),this->ui->radioButton_2->y() + this->ui->radioButton_2->height() + 10);
+    this->ui->label_9->move(this->ui->radioButton_3->x() - 50,this->ui->radioButton_3->y());
+    this->ui->radioButton_4->move(this->ui->radioButton_3->x(),this->ui->radioButton_3->y() + this->ui->radioButton_3->height() + 10);
+    this->ui->label_10->move(this->ui->radioButton_4->x() - 50,this->ui->radioButton_4->y());
+}
+
+void CExamDlg::getCurIndexMultiChoice()
+{
+    _beginthreadex(nullptr,0,&CExamDlg::CExamDlg::threadGetCurIndexMultiChoice,this,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetCurIndexMultiChoice(LPVOID arg)
+{
+    CExamDlg* thiz = (CExamDlg*)arg;
+    std::vector<std::vector<std::string>> ret =  thiz->m_contorller->getCurIndexMultiChoice(thiz->testPaperId,thiz->multiChoiceCurIndex);
+
+    QVector<QVector<QString>>* result = new QVector<QVector<QString>>();
+    for(int i = 0 ; i < ret.size();i++)
+    {
+        QVector<QString> temp;
+        for(int j = 0 ; j < ret.at(i).size();j++)
+        {
+            QString str = QString::fromLocal8Bit(ret.at(i).at(j).c_str());
+            temp.push_back(str);
+        }
+        result->push_back(temp);
+    }
+    emit thiz->startShowMultiChoice(result);
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::showSignalChoice(QVector<QVector<QString>>* ret)
+{
+    if(ret == nullptr)
+    {
+        return ;
+    }
+    //显示题干
+    qDebug()<<"["<<ret->at(0).at(0)<<"]";
+    this->ui->label_4->setText(ret->at(0).at(0));
+    this->ui->verticalLayoutWidget->adjustSize();
+
+    //设置题干自适应
+    this->DynemicShowSignalChoice();
+    //显示A选项
+    this->ui->radioButton->setText(ret->at(0).at(1));
+
+    //显示B选项
+    this->ui->radioButton_2->setText(ret->at(0).at(2));
+
+    //显示C选项
+    this->ui->radioButton_3->setText(ret->at(0).at(3));
+
+    //显示D选项
+    this->ui->radioButton_4->setText(ret->at(0).at(4));
+
+    delete ret;
+}
+
+void CExamDlg::getCurIndexSignalChoice()
+{
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetCurIndexSignalChoice,this,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetCurIndexSignalChoice(LPVOID arg)
+{
+    CExamDlg* thiz = (CExamDlg*)arg;
+    std::vector<std::vector<std::string>> ret =  thiz->m_contorller->getCurIndexSignalChoice(thiz->testPaperId,thiz->signalChoiceCurIndex);
+
+    QVector<QVector<QString>>* result = new QVector<QVector<QString>>();
+    for(int i = 0 ; i < ret.size();i++)
+    {
+        QVector<QString> temp;
+        for(int j = 0 ; j < ret.at(i).size();j++)
+        {
+            QString str = QString::fromLocal8Bit(ret.at(i).at(j).c_str());
+            temp.push_back(str);
+        }
+        result->push_back(temp);
+    }
+    emit thiz->startShowSignalChoice(result);
+    _endthreadex(0);
+    return 0;
 }
 
 void CExamDlg::showSHortAnswerBtn(int Count)

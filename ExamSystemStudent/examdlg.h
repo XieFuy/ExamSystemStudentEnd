@@ -26,6 +26,10 @@ signals:
     void startShowMultiMenueBtn(int Count);
     void startShowJudgeMenueBtn(int Count);
     void startShowShortAnswerBtn(int Count);
+    void startShowSignalChoice(QVector<QVector<QString>>* ret);
+    void startShowMultiChoice(QVector<QVector<QString>>* ret);
+    void startShowJudgeChoice(QVector<QVector<QString>>* ret);
+    void startShowShortAnswerChoice(QVector<QVector<QString>>* ret);
 public:
     QString classId;
     QString teacherId;
@@ -59,6 +63,36 @@ private:
     void showMultiMenueBtn(int Count);
     void showJudgeMenueBtn(int Count);
     void showSHortAnswerBtn(int Count);
+
+
+     void showSignalChoice(QVector<QVector<QString>>* ret);
+     void showMultiChoice(QVector<QVector<QString>>* ret);
+     void showJudgeChoice(QVector<QVector<QString>>* ret);
+     void showShortAnswer(QVector<QVector<QString>>* ret);
+    //获取当前题号的单选题的内容
+    void getCurIndexSignalChoice();
+    static unsigned WINAPI  threadGetCurIndexSignalChoice(LPVOID arg);
+
+    //获取当前多选题的内容
+    void getCurIndexMultiChoice();
+    static unsigned WINAPI threadGetCurIndexMultiChoice(LPVOID arg);
+
+    //获取当前判断题的内容
+    void getCurIndexJudegChoice();
+    static unsigned WINAPI threadGetCurIndexJudegChoice(LPVOID arg);
+
+    //获取当前简答题的内容
+    void getCurIndexShortAnswerChoice();
+    static unsigned WINAPI threadGetCurIndexShortAnswerChoice(LPVOID arg);
+
+    //进行动态调整，并且调整选项的位置
+    void DynemicShowSignalChoice();
+
+    //进行动态调整，并且调整多选的位置
+    void DynemicShowMultiChoice();
+
+    void DynemicShowJudgeChoice();
+
 private:
      QTimer *timer = nullptr;
      int totalSeconds;
@@ -72,6 +106,10 @@ private:
      int multiChoiceCount;
      int judgeCount;
      int shortAnswerCount;
+     int signalChoiceCurIndex; //当前单选题题号
+     int multiChoiceCurIndex; //当前多选题题号
+     int judgeChoiceCurIndex;
+     int shortAnswerCurIndex;
 private:
     Ui::CExamDlg *ui;
 };
