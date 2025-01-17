@@ -95,6 +95,29 @@ private:
 
     void DynemicShowJudgeChoice();
 
+    //点击下一题，进行显示下一题的单选题目
+    void getNextSignalChoive();
+
+    //点击下一题，显示下一题的多选题目
+    void getNextMultiChoic();
+
+    //点击下一题，进行显示下一题的判断题
+    void getNextJudgeChoice();
+
+    //点击下一题，进行显示下一题的简答题
+    void getNextShortAnswerChoice();
+
+    //点击上一题，进行显示上一题的单选题目
+    void getLastSignalChoice();
+
+    //点击上一题，显示上一题的多选题目
+    void getLastMultiChoic();
+
+    //点击上一题，进行显示上一题的判断题
+    void getLastJudgeChoice();
+
+    //点击上一题，进行显示上一题的简答题
+    void getLastShortAnswerChoice();
 private:
      QTimer *timer = nullptr;
      int totalSeconds;

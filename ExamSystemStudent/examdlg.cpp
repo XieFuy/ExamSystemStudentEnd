@@ -234,6 +234,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         QString time = this->longTime;
         time.remove(time.length() - 2 ,2);
         qDebug()<<"转换："<<time;
+        // Example: Start countdown for 5 minutes (300 seconds)
         this->startCountdown(time.toInt());
         emit this->ui->pushButton->clicked();
     });
@@ -247,8 +248,143 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this,&CExamDlg::startShowMultiChoice,this,&CExamDlg::showMultiChoice);
     QObject::connect(this,&CExamDlg::startShowJudgeChoice,this,&CExamDlg::showJudgeChoice);
     QObject::connect(this,&CExamDlg::startShowShortAnswerChoice,this,&CExamDlg::showShortAnswer);
-    // Example: Start countdown for 5 minutes (300 seconds)
+    QObject::connect(this->ui->pushButton_7,&QPushButton::clicked,this,&CExamDlg::getNextSignalChoive);
+    QObject::connect(this->ui->pushButton_89,&QPushButton::clicked,this,&CExamDlg::getNextMultiChoic);
+    QObject::connect(this->ui->pushButton_170,&QPushButton::clicked,this,&CExamDlg::getNextJudgeChoice);
+    QObject::connect(this->ui->pushButton_251,&QPushButton::clicked,this,&CExamDlg::getNextShortAnswerChoice);
+    QObject::connect(this->ui->pushButton_6,&QPushButton::clicked,this,&CExamDlg::getLastSignalChoice);
+    QObject::connect(this->ui->pushButton_88,&QPushButton::clicked,this,&CExamDlg::getLastMultiChoic);
+    QObject::connect(this->ui->pushButton_169,&QPushButton::clicked,this,&CExamDlg::getLastJudgeChoice);
+    QObject::connect(this->ui->pushButton_250,&QPushButton::clicked,this,&CExamDlg::getLastShortAnswerChoice);
+}
 
+void CExamDlg::getLastShortAnswerChoice()
+{
+    if(this->shortAnswerCurIndex > 1)
+    {
+        this->shortAnswerCurIndex -= 1;
+
+        //重新显示题目
+        this->getCurIndexShortAnswerChoice();
+
+        //更改题号
+         this->ui->pushButton_249->setText(QString::number(this->shortAnswerCurIndex));
+        //重新显示题号高光
+         emit this->m_shortAnswerChoice.at(this->shortAnswerCurIndex - 1)->clicked();
+    }
+}
+
+void CExamDlg::getLastJudgeChoice()
+{
+    if(this->judgeChoiceCurIndex > 1)
+    {
+        this->judgeChoiceCurIndex -= 1;
+
+        //重新显示题目
+        this->getCurIndexJudegChoice();
+
+        //更改题号
+        this->ui->pushButton_168->setText(QString::number(this->judgeChoiceCurIndex));
+        //重新显示题号高光
+        emit this->m_judgeChoice.at(this->judgeChoiceCurIndex - 1)->clicked();
+    }
+}
+
+void CExamDlg::getLastMultiChoic()
+{
+    if(this->multiChoiceCurIndex > 1)
+    {
+        this->multiChoiceCurIndex -= 1;
+
+        //重新显示题目
+        this->getCurIndexMultiChoice();
+
+        //更改题号
+        this->ui->pushButton_87->setText(QString::number(this->multiChoiceCurIndex));
+        //重新显示题号高光
+        emit this->m_multiChoice.at(this->multiChoiceCurIndex - 1)->clicked();
+    }
+}
+
+void CExamDlg::getLastSignalChoice()
+{
+    if(this->signalChoiceCurIndex > 1)
+    {
+        this->signalChoiceCurIndex -= 1;
+
+        //重新显示题目
+        this->getCurIndexSignalChoice();
+
+        //更改题号
+        this->ui->pushButton_86->setText(QString::number(this->signalChoiceCurIndex));
+        //重新显示题号高光
+        emit this->m_signalChoice.at(this->signalChoiceCurIndex - 1)->clicked();
+    }
+}
+
+void CExamDlg::getNextShortAnswerChoice()
+{
+    if(this->shortAnswerCurIndex < this->shortAnswerCount)
+    {
+        this->shortAnswerCurIndex += 1;
+
+        //重新显示题目
+        this->getCurIndexShortAnswerChoice();
+
+        //更改题号
+        this->ui->pushButton_249->setText(QString::number(this->shortAnswerCurIndex));
+        //重新显示题号高光
+        emit this->m_shortAnswerChoice.at(this->shortAnswerCurIndex - 1)->clicked();
+    }
+}
+
+void CExamDlg::getNextJudgeChoice()
+{
+    if(this->judgeChoiceCurIndex < this->judgeCount)
+    {
+        this->judgeChoiceCurIndex += 1;
+
+        //重新显示题目
+        this->getCurIndexJudegChoice();
+
+        //更改题号
+        this->ui->pushButton_168->setText(QString::number(this->judgeChoiceCurIndex));
+        //重新显示题号高光
+        emit this->m_judgeChoice.at(this->judgeChoiceCurIndex - 1)->clicked();
+    }
+}
+
+void CExamDlg::getNextMultiChoic()
+{
+    if(this->multiChoiceCurIndex < this->multiChoiceCount)
+    {
+        this->multiChoiceCurIndex += 1;
+
+        //重新显示题目
+        this->getCurIndexMultiChoice();
+
+        //更改题号
+        this->ui->pushButton_87->setText(QString::number(this->multiChoiceCurIndex));
+        //重新显示题号高光
+        emit this->m_multiChoice.at(this->multiChoiceCurIndex - 1)->clicked();
+    }
+}
+
+
+void CExamDlg::getNextSignalChoive()
+{
+    if(this->signalChoiceCurIndex < this->signalChoiceCount)
+    {
+        this->signalChoiceCurIndex += 1;
+
+        //重新显示题目
+        this->getCurIndexSignalChoice();
+
+        //更改题号
+        this->ui->pushButton_86->setText(QString::number(this->signalChoiceCurIndex));
+        //重新显示题号高光
+        emit this->m_signalChoice.at(this->signalChoiceCurIndex - 1)->clicked();
+    }
 }
 
 void CExamDlg::showShortAnswer(QVector<QVector<QString>>* ret)
