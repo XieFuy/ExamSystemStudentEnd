@@ -228,6 +228,13 @@ CExamDlg::CExamDlg(QWidget *parent) :
 
     QObject::connect(this,&CExamDlg::startDoModel,[=](){
         this->getCurTestPaperId();
+        this->ui->label->setText(this->studentName);
+        this->ui->label_2->setText(this->studentId);
+        qDebug()<<"时长："<<this->longTime;
+        QString time = this->longTime;
+        time.remove(time.length() - 2 ,2);
+        qDebug()<<"转换："<<time;
+        this->startCountdown(time.toInt());
         emit this->ui->pushButton->clicked();
     });
 
@@ -241,7 +248,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this,&CExamDlg::startShowJudgeChoice,this,&CExamDlg::showJudgeChoice);
     QObject::connect(this,&CExamDlg::startShowShortAnswerChoice,this,&CExamDlg::showShortAnswer);
     // Example: Start countdown for 5 minutes (300 seconds)
-    startCountdown(120);
+
 }
 
 void CExamDlg::showShortAnswer(QVector<QVector<QString>>* ret)

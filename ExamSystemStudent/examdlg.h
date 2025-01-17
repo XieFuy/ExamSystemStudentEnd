@@ -36,6 +36,8 @@ public:
     QString startTime;
     QString endTime;
     QString longTime;
+    QString studentName;
+    QString studentId;
 private:
     //获取当前正在考试的试卷的id
     void getCurTestPaperId();

@@ -21,6 +21,8 @@ public:
     QString startTime;
     QString endTime;
     QString longTime;
+    QString studentName;
+    QString studentId;
 signals:
     void returnToMainMenueDlg();
 private:

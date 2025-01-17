@@ -218,6 +218,8 @@ void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString 
        this->m_infomationdlg->startTime = startTime;
        this->m_infomationdlg->endTime = endTime;
        this->m_infomationdlg->longTime = longTime;
+       this->m_infomationdlg->studentId =  this->m_acount;
+       this->m_infomationdlg->studentName = this->ui->label_3->text().trimmed();
        this->m_infomationdlg->show();
        this->hide();
 
