@@ -30,6 +30,7 @@ signals:
     void startShowMultiChoice(QVector<QVector<QString>>* ret);
     void startShowJudgeChoice(QVector<QVector<QString>>* ret);
     void startShowShortAnswerChoice(QVector<QVector<QString>>* ret);
+    void startWarning();
 public:
     QString classId;
     QString teacherId;
@@ -71,6 +72,9 @@ private:
      void showMultiChoice(QVector<QVector<QString>>* ret);
      void showJudgeChoice(QVector<QVector<QString>>* ret);
      void showShortAnswer(QVector<QVector<QString>>* ret);
+
+     void showWarningInfo(); //显示警告信息
+
     //获取当前题号的单选题的内容
     void getCurIndexSignalChoice();
     static unsigned WINAPI  threadGetCurIndexSignalChoice(LPVOID arg);
@@ -118,7 +122,15 @@ private:
 
     //点击上一题，进行显示上一题的简答题
     void getLastShortAnswerChoice();
+
+    //禁止使用键盘
+    static LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam);
+
+   //禁止切屏
+    static LRESULT CALLBACK HookProcScreen(int nCode, WPARAM wParam, LPARAM lParam);
 private:
+     static CExamDlg* m_thiz ;
+     static HWND hwnd;
      QTimer *timer = nullptr;
      int totalSeconds;
      QVector<QPushButton*> m_signalChoice;
@@ -135,6 +147,7 @@ private:
      int multiChoiceCurIndex; //当前多选题题号
      int judgeChoiceCurIndex;
      int shortAnswerCurIndex;
+     static HHOOK g_hookHandle ;
 private:
     Ui::CExamDlg *ui;
 };

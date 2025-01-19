@@ -1,6 +1,10 @@
 #include "examdlg.h"
 #include "ui_examdlg.h"
 
+HHOOK CExamDlg::g_hookHandle = nullptr;
+HWND  CExamDlg::hwnd = nullptr;
+CExamDlg* CExamDlg::m_thiz = nullptr;
+
 CExamDlg::CExamDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CExamDlg)
@@ -9,8 +13,14 @@ CExamDlg::CExamDlg(QWidget *parent) :
     this->m_contorller = new CExamContorller();
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     QObject::connect(this->ui->pushButton_5,&QPushButton::clicked,[=](){
-      emit this->rejected();
+        UnhookWindowsHookEx(g_hookHandle);
+        CExamDlg::g_hookHandle = nullptr;
+        emit this->rejected();
     });
+
+    //每次窗口创建的时候窗机进行获取本窗口的句柄
+    CExamDlg::hwnd = reinterpret_cast<HWND>(this->winId());
+    CExamDlg::m_thiz = this;
 
     this->timer = new QTimer();
     this->totalSeconds = 0;
@@ -30,6 +40,10 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getSignalChoiceCount();
         this->getCurIndexSignalChoice();
+        //先进行解除钩子
+        UnhookWindowsHookEx(g_hookHandle);
+        CExamDlg::g_hookHandle = nullptr;
+        CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProc, NULL, 0); //安装钩子，禁止键盘操作
     });
 
     QObject::connect(this->ui->pushButton_2,&QPushButton::clicked,[=](){
@@ -40,6 +54,9 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getMultiChoiceCount();
         this->getCurIndexMultiChoice();
+        UnhookWindowsHookEx(g_hookHandle);
+        CExamDlg::g_hookHandle = nullptr;
+        CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProc, NULL, 0);
     });
 
     QObject::connect(this->ui->pushButton_3,&QPushButton::clicked,[=](){
@@ -50,6 +67,9 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getJudgeChoiceCount();
         this->getCurIndexJudegChoice();
+        UnhookWindowsHookEx(g_hookHandle);
+        CExamDlg::g_hookHandle = nullptr;
+        CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProc, NULL, 0);
     });
 
     QObject::connect(this->ui->pushButton_4,&QPushButton::clicked,[=](){
@@ -60,6 +80,10 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getShortAnswerCount();
         this->getCurIndexShortAnswerChoice();
+        //简答题解除钩子，恢复键盘操作
+        UnhookWindowsHookEx(g_hookHandle);
+        CExamDlg::g_hookHandle = nullptr;
+        CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProcScreen, NULL, 0);
     });
 
     //TODO:明天接着这里继续
@@ -148,6 +172,14 @@ CExamDlg::CExamDlg(QWidget *parent) :
                     btn2->setStyleSheet("QPushButton{border:none;border:2px solid black;border-radius:25;}");
                 }
             }
+            QString str = btn->text().trimmed();
+            int num = str.toInt();
+            //设置题号
+            this->ui->pushButton_86->setText(str);
+            //更新当前题的下标
+            this->signalChoiceCurIndex = num;
+            //获取当先题的
+            this->getCurIndexSignalChoice();
         });
     }
 
@@ -164,6 +196,14 @@ CExamDlg::CExamDlg(QWidget *parent) :
                     btn2->setStyleSheet("QPushButton{border:none;border:2px solid black;border-radius:25;}");
                 }
             }
+            QString str = btn->text().trimmed();
+            int num = str.toInt();
+            //设置题号
+            this->ui->pushButton_87->setText(str);
+            //更新当前题的下标
+            this->multiChoiceCurIndex = num;
+            //获取当先题的
+            this->getCurIndexMultiChoice();
         });
     }
 
@@ -180,6 +220,14 @@ CExamDlg::CExamDlg(QWidget *parent) :
                     btn2->setStyleSheet("QPushButton{border:none;border:2px solid black;border-radius:25;}");
                 }
             }
+            QString str = btn->text().trimmed();
+            int num = str.toInt();
+            //设置题号
+            this->ui->pushButton_168->setText(str);
+            //更新当前题的下标
+            this->judgeChoiceCurIndex = num;
+            //获取当先题的
+            this->getCurIndexJudegChoice();
         });
     }
 
@@ -196,6 +244,14 @@ CExamDlg::CExamDlg(QWidget *parent) :
                     btn2->setStyleSheet("QPushButton{border:none;border:2px solid black;border-radius:25;}");
                 }
             }
+            QString str = btn->text().trimmed();
+            int num = str.toInt();
+            //设置题号
+            this->ui->pushButton_249->setText(str);
+            //更新当前题的下标
+            this->shortAnswerCurIndex = num;
+            //获取当先题的
+            this->getCurIndexShortAnswerChoice();
         });
     }
 
@@ -256,6 +312,52 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this->ui->pushButton_88,&QPushButton::clicked,this,&CExamDlg::getLastMultiChoic);
     QObject::connect(this->ui->pushButton_169,&QPushButton::clicked,this,&CExamDlg::getLastJudgeChoice);
     QObject::connect(this->ui->pushButton_250,&QPushButton::clicked,this,&CExamDlg::getLastShortAnswerChoice);
+    QObject::connect(this,&CExamDlg::startWarning,this,&CExamDlg::showWarningInfo);
+}
+
+void CExamDlg::showWarningInfo()
+{
+    QMessageBox* box = new QMessageBox(QMessageBox::Warning,"警告","考试中禁止切屏，请规范考试！",QMessageBox::Ok);
+    box->setParent(this);
+    box->exec();
+    delete box;
+}
+
+LRESULT CALLBACK CExamDlg::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+   // 拦截键盘消息
+    if (nCode == HC_ACTION) {  //触发键盘事件，将键盘事件及进行禁止
+        if (wParam == WM_KEYDOWN || wParam == WM_KEYUP ||
+                wParam == WM_SYSKEYDOWN || wParam == WM_SYSKEYUP) {
+            // 忽略键盘事件，返回1表示拦截事件，不传递给下一个钩子或目标窗口
+            return 1;
+        }
+    }
+    // 对于其他事件，继续传递
+    return CallNextHookEx(CExamDlg::g_hookHandle, nCode, wParam, lParam);
+}
+
+LRESULT CALLBACK CExamDlg::HookProcScreen(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode == HC_ACTION) // 应用窗体切换事件或键盘事件
+    {
+        if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
+        {
+            KBDLLHOOKSTRUCT* kbdStruct = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+            // 检查是否是Win键或Tab键
+            if (kbdStruct->vkCode == VK_LWIN || kbdStruct->vkCode == VK_RWIN ||
+                kbdStruct->vkCode == VK_TAB)
+            {
+                // 发出警告信号（这里假设m_thiz和startWarning()已经正确设置）
+                emit CExamDlg::m_thiz->startWarning();
+                // 阻止这些键的作用
+                return 1;
+            }
+        }
+    }
+
+    // 对于其他事件，继续传递
+    return CallNextHookEx(CExamDlg::g_hookHandle, nCode, wParam, lParam);
 }
 
 void CExamDlg::getLastShortAnswerChoice()
@@ -265,7 +367,7 @@ void CExamDlg::getLastShortAnswerChoice()
         this->shortAnswerCurIndex -= 1;
 
         //重新显示题目
-        this->getCurIndexShortAnswerChoice();
+//        this->getCurIndexShortAnswerChoice();
 
         //更改题号
          this->ui->pushButton_249->setText(QString::number(this->shortAnswerCurIndex));
@@ -281,7 +383,7 @@ void CExamDlg::getLastJudgeChoice()
         this->judgeChoiceCurIndex -= 1;
 
         //重新显示题目
-        this->getCurIndexJudegChoice();
+//        this->getCurIndexJudegChoice();
 
         //更改题号
         this->ui->pushButton_168->setText(QString::number(this->judgeChoiceCurIndex));
@@ -297,7 +399,7 @@ void CExamDlg::getLastMultiChoic()
         this->multiChoiceCurIndex -= 1;
 
         //重新显示题目
-        this->getCurIndexMultiChoice();
+//        this->getCurIndexMultiChoice();
 
         //更改题号
         this->ui->pushButton_87->setText(QString::number(this->multiChoiceCurIndex));
@@ -313,7 +415,7 @@ void CExamDlg::getLastSignalChoice()
         this->signalChoiceCurIndex -= 1;
 
         //重新显示题目
-        this->getCurIndexSignalChoice();
+//        this->getCurIndexSignalChoice();
 
         //更改题号
         this->ui->pushButton_86->setText(QString::number(this->signalChoiceCurIndex));
@@ -329,7 +431,7 @@ void CExamDlg::getNextShortAnswerChoice()
         this->shortAnswerCurIndex += 1;
 
         //重新显示题目
-        this->getCurIndexShortAnswerChoice();
+//        this->getCurIndexShortAnswerChoice();
 
         //更改题号
         this->ui->pushButton_249->setText(QString::number(this->shortAnswerCurIndex));
@@ -345,7 +447,7 @@ void CExamDlg::getNextJudgeChoice()
         this->judgeChoiceCurIndex += 1;
 
         //重新显示题目
-        this->getCurIndexJudegChoice();
+//        this->getCurIndexJudegChoice();
 
         //更改题号
         this->ui->pushButton_168->setText(QString::number(this->judgeChoiceCurIndex));
@@ -361,7 +463,7 @@ void CExamDlg::getNextMultiChoic()
         this->multiChoiceCurIndex += 1;
 
         //重新显示题目
-        this->getCurIndexMultiChoice();
+//        this->getCurIndexMultiChoice();
 
         //更改题号
         this->ui->pushButton_87->setText(QString::number(this->multiChoiceCurIndex));
@@ -378,7 +480,7 @@ void CExamDlg::getNextSignalChoive()
         this->signalChoiceCurIndex += 1;
 
         //重新显示题目
-        this->getCurIndexSignalChoice();
+//        this->getCurIndexSignalChoice();
 
         //更改题号
         this->ui->pushButton_86->setText(QString::number(this->signalChoiceCurIndex));
@@ -787,5 +889,7 @@ CExamDlg::~CExamDlg()
         delete this->m_contorller;
         this->m_contorller = nullptr;
     }
+    CExamDlg::hwnd = nullptr;
+    CExamDlg::m_thiz = nullptr;
     delete ui;
 }
