@@ -25,6 +25,18 @@ public:
                                                                  ,int curIndex);
     std::vector<std::vector<std::string>> getCurIndexShortAnswerChoice(const char* testPaperId
                                  ,int curIndex);
+    bool updateSignalAnswertoA(const char* teacherId,const char* classId
+                               ,const char* testPaperId
+                               ,const char* studentId,int order);
+    bool updateSignalAnswertoB(const char* teacherId,const char* classId
+                               ,const char* testPaperId
+                               ,const char* studentId,int order);
+    bool updateSignalAnswertoC(const char* teacherId,const char* classId
+                               ,const char* testPaperId
+                               ,const char* studentId,int order);
+    bool updateSignalAnswertoD(const char* teacherId,const char* classId
+                               ,const char* testPaperId
+                               ,const char* studentId,int order);
 };
 
 #endif // CEXAMMODEL_H

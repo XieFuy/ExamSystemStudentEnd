@@ -29,6 +29,19 @@ public:
                                                                  ,int curIndex);
     std::vector<std::vector<std::string>> getCurIndexShortAnswerChoice(QString testPaperId
                                  ,int curIndex);
+    bool updateSignalAnswertoA(QString& teacherId,QString& classId
+                               ,QString testPaperId
+                               ,QString& studentId,QString& order);
+    bool updateSignalAnswertoB(QString& teacherId,QString& classId
+                               ,QString testPaperId
+                               ,QString& studentId,QString& order);
+    bool updateSignalAnswertoC(QString& teacherId,QString& classId
+                               ,QString testPaperId
+                               ,QString& studentId,QString& order);
+    bool updateSignalAnswertoD(QString& teacherId,QString& classId
+                               ,QString testPaperId
+                               ,QString& studentId,QString& order);
+
 };
 
 #endif // CEXAMCONTORLLER_H

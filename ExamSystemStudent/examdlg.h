@@ -128,6 +128,20 @@ private:
 
    //禁止切屏
     static LRESULT CALLBACK HookProcScreen(int nCode, WPARAM wParam, LPARAM lParam);
+
+    //进行存储的是单选题的A选项
+    void updateSignalAnswertoA(bool isChecked);
+    static unsigned WINAPI threadUpdateSignalAnswertoA(LPVOID arg);
+    void updateSignalAnswertoB(bool isChecked);
+    static unsigned WINAPI threadUpdateSignalAnswertoB(LPVOID arg);
+    void updateSignalAnswertoC(bool isChecked);
+    static unsigned WINAPI threadUpdateSignalAnswertoC(LPVOID arg);
+    void updateSignalAnswertoD(bool isChecked);
+    static unsigned WINAPI threadUpdateSignalAnswertoD(LPVOID arg);
+
+    //清除单选题被选中的Ui
+    void clearSignalOption();
+
 private:
      static CExamDlg* m_thiz ;
      static HWND hwnd;

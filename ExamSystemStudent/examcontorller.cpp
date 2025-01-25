@@ -5,6 +5,78 @@ CExamContorller::CExamContorller()
  this->m_model = new CExamModel();
 }
 
+bool CExamContorller::updateSignalAnswertoD(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->updateSignalAnswertoD(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::updateSignalAnswertoC(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->updateSignalAnswertoC(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::updateSignalAnswertoB(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->updateSignalAnswertoB(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::updateSignalAnswertoA(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->updateSignalAnswertoA(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
 std::vector<std::vector<std::string>> CExamContorller::getCurIndexShortAnswerChoice(QString testPaperId
                              ,int curIndex)
 {

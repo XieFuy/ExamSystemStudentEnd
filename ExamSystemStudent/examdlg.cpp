@@ -313,6 +313,148 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this->ui->pushButton_169,&QPushButton::clicked,this,&CExamDlg::getLastJudgeChoice);
     QObject::connect(this->ui->pushButton_250,&QPushButton::clicked,this,&CExamDlg::getLastShortAnswerChoice);
     QObject::connect(this,&CExamDlg::startWarning,this,&CExamDlg::showWarningInfo);
+
+    QObject::connect(this->ui->radioButton,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoA);
+    QObject::connect(this->ui->radioButton_2,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoB);
+    QObject::connect(this->ui->radioButton_3,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoC);
+    QObject::connect(this->ui->radioButton_4,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoD);
+}
+
+void CExamDlg::clearSignalOption()
+{
+    //设置所有的radiobutton都为未点击
+    this->ui->radioButton->setAutoExclusive(false);
+    this->ui->radioButton->setChecked(false);
+    this->ui->radioButton->setAutoExclusive(true);
+
+    this->ui->radioButton_2->setAutoExclusive(false);
+    this->ui->radioButton_2->setChecked(false);
+    this->ui->radioButton_2->setAutoExclusive(true);
+
+    this->ui->radioButton_3->setAutoExclusive(false);
+    this->ui->radioButton_3->setChecked(false);
+    this->ui->radioButton_3->setAutoExclusive(true);
+
+    this->ui->radioButton_4->setAutoExclusive(false);
+    this->ui->radioButton_4->setChecked(false);
+    this->ui->radioButton_4->setAutoExclusive(true);
+}
+
+typedef struct updateSignalArg{
+    QString teacherId;
+    QString classId;
+    QString testPaperId;
+    QString studentId;
+    QString order;
+    CExamDlg* thiz;
+}UpdateSignalArg;
+
+unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoA(LPVOID arg)
+{
+   std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+   std::shared_ptr<UpdateSignalArg> uInfo = *p;
+   uInfo->thiz->m_contorller->updateSignalAnswertoA(uInfo->teacherId,uInfo->classId
+                                                    ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
+   delete p;
+   _endthreadex(0);
+   return 0;
+}
+
+void CExamDlg::updateSignalAnswertoA(bool isChecked)
+{
+    if(isChecked)
+    {
+        std::shared_ptr<UpdateSignalArg> arg = std::make_shared<UpdateSignalArg>();
+        std::shared_ptr<UpdateSignalArg>* p = new std::shared_ptr<UpdateSignalArg>(arg);
+        arg->thiz = this;
+        arg->classId = this->classId;
+        arg->order = this->ui->pushButton_86->text().trimmed();
+        arg->studentId = this->studentId;
+        arg->teacherId = this->teacherId;
+        arg->testPaperId = this->testPaperId;
+        _beginthreadex(nullptr,0,&CExamDlg::threadUpdateSignalAnswertoA,p,0,nullptr);
+    }
+}
+
+unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoB(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    uInfo->thiz->m_contorller->updateSignalAnswertoB(uInfo->teacherId,uInfo->classId
+                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::updateSignalAnswertoB(bool isChecked)
+{
+    if(isChecked)
+    {
+        std::shared_ptr<UpdateSignalArg> arg = std::make_shared<UpdateSignalArg>();
+        std::shared_ptr<UpdateSignalArg>* p = new std::shared_ptr<UpdateSignalArg>(arg);
+        arg->thiz = this;
+        arg->classId = this->classId;
+        arg->order = this->ui->pushButton_86->text().trimmed();
+        arg->studentId = this->studentId;
+        arg->teacherId = this->teacherId;
+        arg->testPaperId = this->testPaperId;
+        _beginthreadex(nullptr,0,&CExamDlg::threadUpdateSignalAnswertoB,p,0,nullptr);
+    }
+}
+
+unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoC(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    uInfo->thiz->m_contorller->updateSignalAnswertoC(uInfo->teacherId,uInfo->classId
+                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::updateSignalAnswertoC(bool isChecked)
+{
+    if(isChecked)
+    {
+        std::shared_ptr<UpdateSignalArg> arg = std::make_shared<UpdateSignalArg>();
+        std::shared_ptr<UpdateSignalArg>* p = new std::shared_ptr<UpdateSignalArg>(arg);
+        arg->thiz = this;
+        arg->classId = this->classId;
+        arg->order = this->ui->pushButton_86->text().trimmed();
+        arg->studentId = this->studentId;
+        arg->teacherId = this->teacherId;
+        arg->testPaperId = this->testPaperId;
+        _beginthreadex(nullptr,0,&CExamDlg::threadUpdateSignalAnswertoC,p,0,nullptr);
+    }
+}
+
+unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoD(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    uInfo->thiz->m_contorller->updateSignalAnswertoD(uInfo->teacherId,uInfo->classId
+                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::updateSignalAnswertoD(bool isChecked)
+{
+    if(isChecked)
+    {
+        std::shared_ptr<UpdateSignalArg> arg = std::make_shared<UpdateSignalArg>();
+        std::shared_ptr<UpdateSignalArg>* p = new std::shared_ptr<UpdateSignalArg>(arg);
+        arg->thiz = this;
+        arg->classId = this->classId;
+        arg->order = this->ui->pushButton_86->text().trimmed();
+        arg->studentId = this->studentId;
+        arg->teacherId = this->teacherId;
+        arg->testPaperId = this->testPaperId;
+        _beginthreadex(nullptr,0,&CExamDlg::threadUpdateSignalAnswertoD,p,0,nullptr);
+    }
 }
 
 void CExamDlg::showWarningInfo()
@@ -421,6 +563,7 @@ void CExamDlg::getLastSignalChoice()
         this->ui->pushButton_86->setText(QString::number(this->signalChoiceCurIndex));
         //重新显示题号高光
         emit this->m_signalChoice.at(this->signalChoiceCurIndex - 1)->clicked();
+//        this->clearSignalOption();
     }
 }
 
@@ -486,6 +629,7 @@ void CExamDlg::getNextSignalChoive()
         this->ui->pushButton_86->setText(QString::number(this->signalChoiceCurIndex));
         //重新显示题号高光
         emit this->m_signalChoice.at(this->signalChoiceCurIndex - 1)->clicked();
+//        this->clearSignalOption();
     }
 }
 

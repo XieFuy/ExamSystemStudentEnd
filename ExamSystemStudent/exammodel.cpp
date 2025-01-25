@@ -5,6 +5,90 @@ CExamModel::CExamModel()
 
 }
 
+bool CExamModel::updateSignalAnswertoD(const char* teacherId,const char* classId
+                           ,const char* testPaperId
+                           ,const char* studentId,int order)
+{
+    if(teacherId == nullptr || classId == nullptr || testPaperId == nullptr
+            || studentId == nullptr )
+    {
+        return false;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf.get(),"update `studentAnswerSingal` set `AnswerGiven` = 'D' \
+where `teacherId` = '%s' and `classId` = '%s' and `testPaperId` = '%s' and `studentId` = '%s' and `order` = %d;",
+            teacherId,classId,testPaperId,studentId,order);
+    sql = sqlBuf.get();
+    bool ret =  dbHelper->sqlExcute(sql,"ExamSystem");
+    return ret;
+}
+
+bool CExamModel::updateSignalAnswertoC(const char* teacherId,const char* classId
+                           ,const char* testPaperId
+                           ,const char* studentId,int order)
+{
+    if(teacherId == nullptr || classId == nullptr || testPaperId == nullptr
+            || studentId == nullptr )
+    {
+        return false;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf.get(),"update `studentAnswerSingal` set `AnswerGiven` = 'C' \
+where `teacherId` = '%s' and `classId` = '%s' and `testPaperId` = '%s' and `studentId` = '%s' and `order` = %d;",
+            teacherId,classId,testPaperId,studentId,order);
+    sql = sqlBuf.get();
+    bool ret =  dbHelper->sqlExcute(sql,"ExamSystem");
+    return ret;
+}
+
+bool CExamModel::updateSignalAnswertoB(const char* teacherId,const char* classId
+                           ,const char* testPaperId
+                           ,const char* studentId,int order)
+{
+    if(teacherId == nullptr || classId == nullptr || testPaperId == nullptr
+            || studentId == nullptr )
+    {
+        return false;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf.get(),"update `studentAnswerSingal` set `AnswerGiven` = 'B' \
+where `teacherId` = '%s' and `classId` = '%s' and `testPaperId` = '%s' and `studentId` = '%s' and `order` = %d;",
+            teacherId,classId,testPaperId,studentId,order);
+    sql = sqlBuf.get();
+    bool ret =  dbHelper->sqlExcute(sql,"ExamSystem");
+    return ret;
+}
+
+bool CExamModel::updateSignalAnswertoA(const char* teacherId,const char* classId
+                           ,const char* testPaperId
+                           ,const char* studentId,int order)
+{
+    if(teacherId == nullptr || classId == nullptr || testPaperId == nullptr
+            || studentId == nullptr )
+    {
+        return false;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    std::string sql;
+    sprintf(sqlBuf.get(),"update `studentAnswerSingal` set `AnswerGiven` = 'A' \
+where `teacherId` = '%s' and `classId` = '%s' and `testPaperId` = '%s' and `studentId` = '%s' and `order` = %d;",
+            teacherId,classId,testPaperId,studentId,order);
+    sql = sqlBuf.get();
+    bool ret =  dbHelper->sqlExcute(sql,"ExamSystem");
+    return ret;
+}
+
 std::vector<std::vector<std::string>> CExamModel::getCurIndexShortAnswerChoice(const char* testPaperId
                              ,int curIndex)
 {
