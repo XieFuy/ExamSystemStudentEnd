@@ -41,6 +41,16 @@ public:
     bool updateSignalAnswertoD(QString& teacherId,QString& classId
                                ,QString testPaperId
                                ,QString& studentId,QString& order);
+    std::vector<std::vector<std::string>> getSignalChoice(QString& teacherId,QString& classId
+                                                          ,QString testPaperId
+                                                          ,QString& studentId,QString& order);
+    bool UpdateMultiAnswer(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order,QString& answer);
+    std::vector<std::vector<std::string>> getMultiChoice(QString& teacherId,QString& classId
+                                                          ,QString testPaperId
+                                                          ,QString& studentId,QString& order);
+
 
 };
 

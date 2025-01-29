@@ -39,6 +39,7 @@ public:
     QString longTime;
     QString studentName;
     QString studentId;
+    QString multiAnswer; //用于存储多选题的选项
 private:
     //获取当前正在考试的试卷的id
     void getCurTestPaperId();
@@ -139,10 +140,33 @@ private:
     void updateSignalAnswertoD(bool isChecked);
     static unsigned WINAPI threadUpdateSignalAnswertoD(LPVOID arg);
 
+    //进行存储多选题的选项
+    void updateMultiAnswerA(bool isChecked); //进行存储多选题的A答案
+    void updateMultiAnswerB(bool isChecked);
+    void updateMultiAnswerC(bool isChecked);
+    void updateMultiAnswerD(bool isChecked);
+    void updateMultiAnswerE(bool isChecked);
+    void updateMultiAnswerF(bool isChecked);
+
+    static unsigned WINAPI threadUpdateMultiAnswer(LPVOID arg);
+
     //清除单选题被选中的Ui
     void clearSignalOption();
 
+    //清除多选题被选中的UI
+    void clearMultiOption();
+
+
+    //实现点击上一题或者下一题的时候进行回显该题的选项，如果为NULL则进行清空所有选项，有选项则进行回显
+    void getSignalChoice();
+    static unsigned WINAPI threadGetSignalChoice(LPVOID arg);
+
+    //实现点击上一题或者下一题的时候进行回显学生选中的选项
+    void getMultiChoice();
+    static unsigned WINAPI threadGetMultiChoice(LPVOID arg);
+
 private:
+     HANDLE m_mutex;
      static CExamDlg* m_thiz ;
      static HWND hwnd;
      QTimer *timer = nullptr;

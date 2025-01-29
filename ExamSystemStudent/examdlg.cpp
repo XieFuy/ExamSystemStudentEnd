@@ -32,6 +32,8 @@ CExamDlg::CExamDlg(QWidget *parent) :
     this->signalChoiceCurIndex = 1;
     this->multiChoiceCurIndex = 1;
     this->shortAnswerCurIndex = 1;
+    this->m_mutex = CreateMutex(nullptr,FALSE,nullptr);
+
     QObject::connect(this->ui->pushButton,&QPushButton::clicked,[=](){
         this->ui->stackedWidget->setCurrentIndex(0);
         this->ui->pushButton->setStyleSheet("QPushButton{border:none;color:#FFFFFF;  background-color:#f7115b;}");
@@ -40,6 +42,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getSignalChoiceCount();
         this->getCurIndexSignalChoice();
+        this->getSignalChoice();
         //先进行解除钩子
         UnhookWindowsHookEx(g_hookHandle);
         CExamDlg::g_hookHandle = nullptr;
@@ -54,6 +57,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getMultiChoiceCount();
         this->getCurIndexMultiChoice();
+        this->getMultiChoice();
         UnhookWindowsHookEx(g_hookHandle);
         CExamDlg::g_hookHandle = nullptr;
         CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProc, NULL, 0);
@@ -180,6 +184,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
             this->signalChoiceCurIndex = num;
             //获取当先题的
             this->getCurIndexSignalChoice();
+            this->getSignalChoice();
         });
     }
 
@@ -203,7 +208,8 @@ CExamDlg::CExamDlg(QWidget *parent) :
             //更新当前题的下标
             this->multiChoiceCurIndex = num;
             //获取当先题的
-            this->getCurIndexMultiChoice();
+            this->getCurIndexMultiChoice(); 
+            this->getMultiChoice();
         });
     }
 
@@ -318,6 +324,309 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this->ui->radioButton_2,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoB);
     QObject::connect(this->ui->radioButton_3,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoC);
     QObject::connect(this->ui->radioButton_4,&QRadioButton::toggled,this,&CExamDlg::updateSignalAnswertoD);
+
+    QObject::connect(this->ui->checkBox,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerA);
+    QObject::connect(this->ui->checkBox_2,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerB);
+    QObject::connect(this->ui->checkBox_3,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerC);
+    QObject::connect(this->ui->checkBox_4,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerD);
+    QObject::connect(this->ui->checkBox_5,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerE);
+    QObject::connect(this->ui->checkBox_6,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerF);
+}
+
+
+
+void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会影响 触发tologed信号
+{
+    //清除多选框的选中
+    QObject::disconnect(this->ui->checkBox,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerA);
+    this->ui->checkBox->setChecked(false);
+    QObject::connect(this->ui->checkBox,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerA);
+
+    QObject::disconnect(this->ui->checkBox_2,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerB);
+    this->ui->checkBox_2->setChecked(false);
+    QObject::connect(this->ui->checkBox_2,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerB);
+
+    QObject::disconnect(this->ui->checkBox_3,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerC);
+    this->ui->checkBox_3->setChecked(false);
+    QObject::connect(this->ui->checkBox_3,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerC);
+
+    QObject::disconnect(this->ui->checkBox_4,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerD);
+    this->ui->checkBox_4->setChecked(false);
+    QObject::connect(this->ui->checkBox_4,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerD);
+
+    QObject::disconnect(this->ui->checkBox_5,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerE);
+    this->ui->checkBox_5->setChecked(false);
+    QObject::connect(this->ui->checkBox_5,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerE);
+
+    QObject::disconnect(this->ui->checkBox_6,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerF);
+    this->ui->checkBox_6->setChecked(false);
+    QObject::connect(this->ui->checkBox_6,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerF);
+
+//    this->ui->checkBox->setChecked(false);
+//    this->ui->checkBox_2->setChecked(false);
+//    this->ui->checkBox_3->setChecked(false);
+//    this->ui->checkBox_4->setChecked(false);
+//    this->ui->checkBox_5->setChecked(false);
+//    this->ui->checkBox_6->setChecked(false);
+}
+
+typedef struct updateMultiAnswerArg{
+    QString teacherId;
+    QString classId;
+    QString testPaperId;
+    QString studentId;
+    QString order;
+    QString answer;
+    CExamDlg* thiz;
+}UpdateMultiAnswerArg;
+
+void CExamDlg::updateMultiAnswerF(bool isChecked)  //回显的时候会进行设置状态也会重新触发
+{
+    WaitForSingleObject(this->m_mutex,INFINITE);
+    if(isChecked) //如果不存在F选项的话，进行添加选项F
+    {
+        if(this->multiAnswer == "NULL")
+        {
+            this->multiAnswer = "";
+        }
+        qDebug()<<"选中选项F";
+        if(this->multiAnswer.contains("F") == false)
+        {
+            this->multiAnswer += "F,";
+        }
+    }else //如果存在F选项，进行删除选项F
+    {
+        qDebug()<<"撤销选项F";
+        if(this->multiAnswer.contains("F"))
+        {
+            this->multiAnswer.remove("F,");
+        }
+    }
+    if(this->multiAnswer == "")
+    {
+        this->multiAnswer = "NULL";
+    }
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->answer = this->multiAnswer;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_87->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateMultiAnswer,p,0,nullptr);
+}
+
+void CExamDlg::updateMultiAnswerE(bool isChecked)
+{
+    WaitForSingleObject(this->m_mutex,INFINITE);
+    if(isChecked) //如果不存在D选项的话，进行添加选项D
+    {
+        if(this->multiAnswer == "NULL")
+        {
+            this->multiAnswer = "";
+        }
+         qDebug()<<"选中选项E";
+        if(this->multiAnswer.contains("E") == false)
+        {
+            this->multiAnswer += "E,";
+        }
+    }else //如果存在E选项，进行删除选项E
+    {
+        qDebug()<<"撤销选项E";
+        if(this->multiAnswer.contains("E"))
+        {
+            this->multiAnswer.remove("E,");
+        }
+    }
+    if(this->multiAnswer == "")
+    {
+        this->multiAnswer = "NULL";
+    }
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->answer = this->multiAnswer;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_87->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateMultiAnswer,p,0,nullptr);
+}
+
+void CExamDlg::updateMultiAnswerD(bool isChecked)
+{
+
+    WaitForSingleObject(this->m_mutex,INFINITE);
+
+    if(isChecked) //如果不存在D选项的话，进行添加选项D
+    {
+        if(this->multiAnswer == "NULL")
+        {
+            this->multiAnswer = "";
+        }
+         qDebug()<<"选中选项D";
+        if(this->multiAnswer.contains("D") == false)
+        {
+            this->multiAnswer += "D,";
+        }
+    }else //如果存在D选项，进行删除选项D
+    {
+        qDebug()<<"撤销选项D";
+        if(this->multiAnswer.contains("D"))
+        {
+            this->multiAnswer.remove("D,");
+        }
+    }
+    if(this->multiAnswer == "")
+    {
+        this->multiAnswer = "NULL";
+    }
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->answer = this->multiAnswer;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_87->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateMultiAnswer,p,0,nullptr);
+}
+
+void CExamDlg::updateMultiAnswerC(bool isChecked)
+{
+    WaitForSingleObject(this->m_mutex,INFINITE);
+    if(isChecked) //如果不存在C选项的话，进行添加选项C
+    {
+        if(this->multiAnswer == "NULL")
+        {
+            this->multiAnswer = "";
+        }
+         qDebug()<<"选中选项C";
+        if(this->multiAnswer.contains("C") == false)
+        {
+            this->multiAnswer += "C,";
+        }
+    }else //如果存在C选项，进行删除选项C
+    {
+        qDebug()<<"撤销选项C";
+        if(this->multiAnswer.contains("C"))
+        {
+            this->multiAnswer.remove("C,");
+        }
+    }
+    if(this->multiAnswer == "")
+    {
+        this->multiAnswer = "NULL";
+    }
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->answer = this->multiAnswer;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_87->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateMultiAnswer,p,0,nullptr);
+}
+
+void CExamDlg::updateMultiAnswerB(bool isChecked)
+{
+    WaitForSingleObject(this->m_mutex,INFINITE);
+    if(isChecked) //如果不存在B选项的话，进行添加选项B
+    {
+        if(this->multiAnswer == "NULL")
+        {
+            this->multiAnswer = "";
+        }
+        qDebug()<<"选中选项B";
+        if(this->multiAnswer.contains("B") == false)
+        {
+            this->multiAnswer += "B,";
+        }
+    }else //如果存在A选项，进行删除选项B
+    {
+        qDebug()<<"撤销选项B";
+        if(this->multiAnswer.contains("B"))
+        {
+            this->multiAnswer.remove("B,");
+        }
+    }
+    if(this->multiAnswer == "")
+    {
+        this->multiAnswer = "NULL";
+    }
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->answer = this->multiAnswer;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_87->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateMultiAnswer,p,0,nullptr);
+}
+
+void CExamDlg::updateMultiAnswerA(bool isChecked)
+{
+    //在开始进行上锁
+    WaitForSingleObject(this->m_mutex,INFINITE);
+    if(isChecked) //如果不存在A选项的话，进行添加选项A
+    {
+        if(this->multiAnswer == "NULL")
+        {
+            this->multiAnswer = "";
+        }
+        qDebug()<<"选中选项A";
+        if(this->multiAnswer.contains("A") == false)
+        {
+            this->multiAnswer += "A,";
+        }
+    }else //如果存在A选项，进行删除选项A
+    {
+        qDebug()<<"撤销选项A";
+        if(this->multiAnswer.contains("A"))
+        {
+            //进行去除A选项
+            this->multiAnswer.remove("A,");
+        }
+    }
+    if(this->multiAnswer == "")
+    {
+        this->multiAnswer = "NULL";
+    }
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->answer = this->multiAnswer;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_87->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateMultiAnswer,p,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadUpdateMultiAnswer(LPVOID arg)
+{
+    std::shared_ptr<UpdateMultiAnswerArg>* p = (std::shared_ptr<UpdateMultiAnswerArg>*)arg;
+    std::shared_ptr<UpdateMultiAnswerArg> uInfo = *p;
+    //进行判断是不是空串，如果是空串则进行设置为答案为NULL
+
+
+    qDebug()<<"存入的多选题的选项："<<uInfo->thiz->multiAnswer;
+    uInfo->thiz->m_contorller->UpdateMultiAnswer(uInfo->teacherId,uInfo->classId
+                                                 ,uInfo->testPaperId,uInfo->studentId
+                                                 ,uInfo->order,uInfo->answer);
+    delete p;
+    ReleaseMutex(uInfo->thiz->m_mutex);
+    _endthreadex(0);
+    return 0;
 }
 
 void CExamDlg::clearSignalOption()
@@ -348,6 +657,130 @@ typedef struct updateSignalArg{
     QString order;
     CExamDlg* thiz;
 }UpdateSignalArg;
+
+
+void CExamDlg::getMultiChoice()
+{
+    this->clearMultiOption();
+    std::shared_ptr<UpdateSignalArg> uArg = std::make_shared<UpdateSignalArg>();
+    std::shared_ptr<UpdateSignalArg>* p = new  std::shared_ptr<UpdateSignalArg>(uArg);
+    uArg->teacherId = this->teacherId;
+    uArg->classId = this->classId;
+    uArg->testPaperId = this->testPaperId;
+    uArg->studentId = this->studentId;
+    uArg->order = this->ui->pushButton_87->text().trimmed();
+    uArg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetMultiChoice,p,0,nullptr);
+}
+
+unsigned WINAPI  CExamDlg::threadGetMultiChoice(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    uInfo->thiz->multiAnswer = "";
+    std::vector<std::vector<std::string>> ret =  uInfo->thiz->m_contorller->getMultiChoice(uInfo->teacherId,uInfo->classId
+                                               ,uInfo->testPaperId
+                                               ,uInfo->studentId,uInfo->order);
+
+    QString str = QString::fromLocal8Bit(ret.at(0).at(0).c_str());
+     qDebug()<<"数据回显："<<str;
+    if(str == "NULL")
+    {
+        uInfo->thiz->clearMultiOption();
+        uInfo->thiz->multiAnswer = "NULL";
+    }else
+    {
+       //先清空所有的选项，然后选中答案所选的项
+        uInfo->thiz->multiAnswer = str;
+        uInfo->thiz->clearMultiOption();
+        if(str.contains("A"))
+        {
+            QObject::disconnect(uInfo->thiz->ui->checkBox,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerA);
+            uInfo->thiz->ui->checkBox->setChecked(true);
+            QObject::connect(uInfo->thiz->ui->checkBox,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerA);
+        }
+        if(str.contains("B"))
+        {
+            QObject::disconnect(uInfo->thiz->ui->checkBox_2,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerB);
+            uInfo->thiz->ui->checkBox_2->setChecked(true);
+            QObject::connect(uInfo->thiz->ui->checkBox_2,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerB);
+        }
+        if(str.contains("C"))
+        {
+            QObject::disconnect(uInfo->thiz->ui->checkBox_3,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerC);
+             uInfo->thiz->ui->checkBox_3->setChecked(true);
+             QObject::connect(uInfo->thiz->ui->checkBox_3,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerC);
+        }
+        if(str.contains("D"))
+        {
+             QObject::disconnect(uInfo->thiz->ui->checkBox_4,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerD);
+             uInfo->thiz->ui->checkBox_4->setChecked(true);
+              QObject::connect(uInfo->thiz->ui->checkBox_4,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerD);
+        }
+        if(str.contains("E"))
+        {
+            QObject::disconnect(uInfo->thiz->ui->checkBox_5,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerE);
+             uInfo->thiz->ui->checkBox_5->setChecked(true);
+             QObject::connect(uInfo->thiz->ui->checkBox_5,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerE);
+        }
+        if(str.contains("F"))
+        {
+            QObject::disconnect(uInfo->thiz->ui->checkBox_6,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerF);
+             uInfo->thiz->ui->checkBox_6->setChecked(true);
+             QObject::connect(uInfo->thiz->ui->checkBox_6,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerF);
+        }
+    }
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::getSignalChoice()
+{
+    std::shared_ptr<UpdateSignalArg> uArg = std::make_shared<UpdateSignalArg>();
+    std::shared_ptr<UpdateSignalArg>* p = new  std::shared_ptr<UpdateSignalArg>(uArg);
+    uArg->teacherId = this->teacherId;
+    uArg->classId = this->classId;
+    uArg->testPaperId = this->testPaperId;
+    uArg->studentId = this->studentId;
+    uArg->order = this->ui->pushButton_86->text().trimmed();
+    uArg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetSignalChoice,p,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetSignalChoice(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    std::vector<std::vector<std::string>> ret =  uInfo->thiz->m_contorller->getSignalChoice(uInfo->teacherId,uInfo->classId
+                                               ,uInfo->testPaperId
+                                               ,uInfo->studentId,uInfo->order);
+    //进行对结果进行处理
+    if(ret.at(0).at(0) == "NULL")
+    {
+        //清空所有的选项
+        uInfo->thiz->clearSignalOption();
+    }else if(ret.at(0).at(0) == "A")
+    {
+        //选中A
+        uInfo->thiz->ui->radioButton->setChecked(true);
+    }else if(ret.at(0).at(0) == "B")
+    {
+        //选中B
+        uInfo->thiz->ui->radioButton_2->setChecked(true);
+    }else if(ret.at(0).at(0) == "C")
+    {
+        //选中C
+        uInfo->thiz->ui->radioButton_3->setChecked(true);
+    }else if(ret.at(0).at(0) == "D")
+    {
+        //选中D
+        uInfo->thiz->ui->radioButton_4->setChecked(true);
+    }
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
 
 unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoA(LPVOID arg)
 {

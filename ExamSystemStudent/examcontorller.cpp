@@ -5,6 +5,61 @@ CExamContorller::CExamContorller()
  this->m_model = new CExamModel();
 }
 
+std::vector<std::vector<std::string>> CExamContorller::getMultiChoice(QString& teacherId,QString& classId
+                                                      ,QString testPaperId
+                                                      ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->getMultiChoice(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::UpdateMultiAnswer(QString& teacherId,QString& classId
+                       ,QString testPaperId
+                       ,QString& studentId,QString& order,QString& answer)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr  = studentId.toLocal8Bit();
+    int iOrder = order.toInt();
+    QByteArray answerArr = answer.toUtf8();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId = testPaperIdArr.data();
+    const char* pStudentId  = studentIdArr.data();
+    const char* pAnswer = answerArr.data();
+    return this->m_model->UpdateMultiAnswer(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder,pAnswer);
+}
+
+std::vector<std::vector<std::string>> CExamContorller::getSignalChoice(QString& teacherId,QString& classId
+                                                      ,QString testPaperId
+                                                      ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->getSignalChoice(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
 bool CExamContorller::updateSignalAnswertoD(QString& teacherId,QString& classId
                            ,QString testPaperId
                            ,QString& studentId,QString& order)
