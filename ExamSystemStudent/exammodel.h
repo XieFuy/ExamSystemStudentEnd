@@ -46,6 +46,16 @@ public:
     std::vector<std::vector<std::string>> getMultiChoice(const char* teacherId,const char* classId
                                                           ,const char* testPaperId
                                                           ,const char* studentId,int order);
+    bool updateJudgeAnswerTrue(const char* teacherId,const char* classId
+                               ,const char* testPaperId
+                               ,const char* studentId,int order);
+
+    bool updateJudgeAnswerFalse(const char* teacherId,const char* classId
+                               ,const char* testPaperId
+                               ,const char* studentId,int order);
+    std::vector<std::vector<std::string>>  getJudgeChoice(const char* teacherId,const char* classId
+                                                          ,const char* testPaperId
+                                                          ,const char* studentId,int order);
 };
 
 #endif // CEXAMMODEL_H

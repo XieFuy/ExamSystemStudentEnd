@@ -5,6 +5,60 @@ CExamContorller::CExamContorller()
  this->m_model = new CExamModel();
 }
 
+std::vector<std::vector<std::string>>  CExamContorller::getJudgeChoice(QString& teacherId,QString& classId
+                                                     ,QString& testPaperId
+                                                     ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->getJudgeChoice(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::updateJudgeAnswerFalse(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->updateJudgeAnswerFalse(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::updateJudgeAnswerTrue(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->updateJudgeAnswerTrue(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
 std::vector<std::vector<std::string>> CExamContorller::getMultiChoice(QString& teacherId,QString& classId
                                                       ,QString testPaperId
                                                       ,QString& studentId,QString& order)

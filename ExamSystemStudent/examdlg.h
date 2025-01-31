@@ -150,12 +150,21 @@ private:
 
     static unsigned WINAPI threadUpdateMultiAnswer(LPVOID arg);
 
+    //进行存储判断题的答案
+    void updateJudgeAnswerTrue(bool isChecked);
+    static unsigned WINAPI threadUpdateJudgeAnswerTrue(LPVOID arg);
+
+    void updateJudgeAnswerFalse(bool isChecked);
+    static  unsigned WINAPI threadUpdateJudgeAnswerFalse(LPVOID arg);
+
     //清除单选题被选中的Ui
     void clearSignalOption();
 
     //清除多选题被选中的UI
     void clearMultiOption();
 
+    //清除判断题选中的UI
+    void clearJudgeOption();
 
     //实现点击上一题或者下一题的时候进行回显该题的选项，如果为NULL则进行清空所有选项，有选项则进行回显
     void getSignalChoice();
@@ -165,6 +174,9 @@ private:
     void getMultiChoice();
     static unsigned WINAPI threadGetMultiChoice(LPVOID arg);
 
+    //实现点击上一题或者下一题的时候进行回显该题选项，如果为NULL则清空所有的选项，有则进行回显
+    void getJudgeChoice();
+    static unsigned WINAPI threadGetJudgeChoice(LPVOID arg);
 private:
      HANDLE m_mutex;
      static CExamDlg* m_thiz ;

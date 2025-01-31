@@ -71,6 +71,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_4->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getJudgeChoiceCount();
         this->getCurIndexJudegChoice();
+        this->getJudgeChoice();
         UnhookWindowsHookEx(g_hookHandle);
         CExamDlg::g_hookHandle = nullptr;
         CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProc, NULL, 0);
@@ -234,6 +235,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
             this->judgeChoiceCurIndex = num;
             //获取当先题的
             this->getCurIndexJudegChoice();
+            this->getJudgeChoice();
         });
     }
 
@@ -331,8 +333,10 @@ CExamDlg::CExamDlg(QWidget *parent) :
     QObject::connect(this->ui->checkBox_4,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerD);
     QObject::connect(this->ui->checkBox_5,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerE);
     QObject::connect(this->ui->checkBox_6,&QCheckBox::toggled,this,&CExamDlg::updateMultiAnswerF);
-}
 
+    QObject::connect(this->ui->radioButton_5,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerTrue);
+    QObject::connect(this->ui->radioButton_6,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerFalse);
+}
 
 
 void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会影响 触发tologed信号
@@ -368,6 +372,21 @@ void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会�
 //    this->ui->checkBox_4->setChecked(false);
 //    this->ui->checkBox_5->setChecked(false);
 //    this->ui->checkBox_6->setChecked(false);
+}
+
+void CExamDlg::clearJudgeOption()
+{
+    this->ui->radioButton_5->setAutoExclusive(false);
+    QObject::disconnect(this->ui->radioButton_5,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerTrue);
+    this->ui->radioButton_5->setChecked(false);
+    QObject::connect(this->ui->radioButton_5,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerTrue);
+    this->ui->radioButton_5->setAutoExclusive(true);
+
+    this->ui->radioButton_6->setAutoExclusive(false);
+    QObject::disconnect(this->ui->radioButton_6,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerFalse);
+    this->ui->radioButton_6->setChecked(false);
+    QObject::connect(this->ui->radioButton_6,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerFalse);
+    this->ui->radioButton_6->setAutoExclusive(true);
 }
 
 typedef struct updateMultiAnswerArg{
@@ -658,6 +677,59 @@ typedef struct updateSignalArg{
     CExamDlg* thiz;
 }UpdateSignalArg;
 
+void CExamDlg::updateJudgeAnswerTrue(bool isChecked)
+{
+    if(isChecked)
+    {
+        std::shared_ptr<UpdateSignalArg> arg = std::make_shared<UpdateSignalArg>();
+        std::shared_ptr<UpdateSignalArg>* p = new std::shared_ptr<UpdateSignalArg>(arg);
+        arg->thiz = this;
+        arg->classId = this->classId;
+        arg->order = this->ui->pushButton_168->text().trimmed();
+        arg->studentId = this->studentId;
+        arg->teacherId = this->teacherId;
+        arg->testPaperId = this->testPaperId;
+        _beginthreadex(nullptr,0,&CExamDlg::threadUpdateJudgeAnswerTrue,p,0,nullptr);
+    }
+}
+
+unsigned WINAPI CExamDlg::threadUpdateJudgeAnswerTrue(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    uInfo->thiz->m_contorller->updateJudgeAnswerTrue(uInfo->teacherId,uInfo->classId
+                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::updateJudgeAnswerFalse(bool isChecked)
+{
+    if(isChecked)
+    {
+        std::shared_ptr<UpdateSignalArg> arg = std::make_shared<UpdateSignalArg>();
+        std::shared_ptr<UpdateSignalArg>* p = new std::shared_ptr<UpdateSignalArg>(arg);
+        arg->thiz = this;
+        arg->classId = this->classId;
+        arg->order = this->ui->pushButton_168->text().trimmed();
+        arg->studentId = this->studentId;
+        arg->teacherId = this->teacherId;
+        arg->testPaperId = this->testPaperId;
+        _beginthreadex(nullptr,0,&CExamDlg::threadUpdateJudgeAnswerFalse,p,0,nullptr);
+    }
+}
+
+unsigned WINAPI CExamDlg::threadUpdateJudgeAnswerFalse(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    uInfo->thiz->m_contorller->updateJudgeAnswerFalse(uInfo->teacherId,uInfo->classId
+                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
 
 void CExamDlg::getMultiChoice()
 {
@@ -729,6 +801,47 @@ unsigned WINAPI  CExamDlg::threadGetMultiChoice(LPVOID arg)
              uInfo->thiz->ui->checkBox_6->setChecked(true);
              QObject::connect(uInfo->thiz->ui->checkBox_6,&QCheckBox::toggled,uInfo->thiz,&CExamDlg::updateMultiAnswerF);
         }
+    }
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
+void CExamDlg::getJudgeChoice()
+{
+    this->clearJudgeOption();
+    std::shared_ptr<UpdateSignalArg> uArg = std::make_shared<UpdateSignalArg>();
+    std::shared_ptr<UpdateSignalArg>* p = new  std::shared_ptr<UpdateSignalArg>(uArg);
+    uArg->teacherId = this->teacherId;
+    uArg->classId = this->classId;
+    uArg->testPaperId = this->testPaperId;
+    uArg->studentId = this->studentId;
+    uArg->order = this->ui->pushButton_168->text().trimmed();
+    uArg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetJudgeChoice,p,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetJudgeChoice(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    std::vector<std::vector<std::string>> ret =  uInfo->thiz->m_contorller->getJudgeChoice(uInfo->teacherId,uInfo->classId
+                                               ,uInfo->testPaperId
+                                               ,uInfo->studentId,uInfo->order);
+    qDebug()<<"回显的答案："<<ret.at(0).at(0).c_str();
+    //进行对结果进行处理
+    if(ret.at(0).at(0) == "NULL")
+    {
+        //清空所有的选项
+        uInfo->thiz->clearJudgeOption();
+    }else if(ret.at(0).at(0) == "0")
+    {
+        //选中 错
+        uInfo->thiz->ui->radioButton_6->setChecked(true);
+    }else if(ret.at(0).at(0) == "1")
+    {
+        //选中 对
+        uInfo->thiz->ui->radioButton_5->setChecked(true);
     }
     delete p;
     _endthreadex(0);

@@ -50,7 +50,16 @@ public:
     std::vector<std::vector<std::string>> getMultiChoice(QString& teacherId,QString& classId
                                                           ,QString testPaperId
                                                           ,QString& studentId,QString& order);
+    bool updateJudgeAnswerTrue(QString& teacherId,QString& classId
+                               ,QString testPaperId
+                               ,QString& studentId,QString& order);
 
+    bool updateJudgeAnswerFalse(QString& teacherId,QString& classId
+                               ,QString testPaperId
+                               ,QString& studentId,QString& order);
+    std::vector<std::vector<std::string>> getJudgeChoice(QString& teacherId,QString& classId
+                                                         ,QString& testPaperId
+                                                         ,QString& studentId,QString& order);
 
 };
 
