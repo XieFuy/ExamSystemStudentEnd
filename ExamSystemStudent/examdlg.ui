@@ -433,7 +433,7 @@ color:#FFFFFF;
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QWidget" name="widget_2" native="true">
@@ -4467,7 +4467,7 @@ p, li { white-space: pre-wrap; }
        <x>90</x>
        <y>340</y>
        <width>1721</width>
-       <height>261</height>
+       <height>241</height>
       </rect>
      </property>
      <property name="font">
@@ -5585,6 +5585,32 @@ border-radius:25;
        <string/>
       </property>
      </widget>
+    </widget>
+    <widget class="QPushButton" name="pushButton_330">
+     <property name="geometry">
+      <rect>
+       <x>1720</x>
+       <y>590</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#pushButton_330{
+border:none;
+border:1px solid #faa046;
+color:#faa046;
+border-radius:5;
+}
+
+#pushButton_330:hover{
+border:1px solid #50b8f7;
+color:#50b8f7;
+}</string>
+     </property>
+     <property name="text">
+      <string>保存答案</string>
+     </property>
     </widget>
    </widget>
   </widget>

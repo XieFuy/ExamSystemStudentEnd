@@ -85,6 +85,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
         this->ui->pushButton_3->setStyleSheet("QPushButton{border:none;background-color:#0082EB;color:#FFFFFF;}QPushButton:hover{background-color:#2998F5;}");
         this->getShortAnswerCount();
         this->getCurIndexShortAnswerChoice();
+        this->getShortAnswer();
         //简答题解除钩子，恢复键盘操作
         UnhookWindowsHookEx(g_hookHandle);
         CExamDlg::g_hookHandle = nullptr;
@@ -260,6 +261,7 @@ CExamDlg::CExamDlg(QWidget *parent) :
             this->shortAnswerCurIndex = num;
             //获取当先题的
             this->getCurIndexShortAnswerChoice();
+            this->getShortAnswer();
         });
     }
 
@@ -336,6 +338,9 @@ CExamDlg::CExamDlg(QWidget *parent) :
 
     QObject::connect(this->ui->radioButton_5,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerTrue);
     QObject::connect(this->ui->radioButton_6,&QRadioButton::toggled,this,&CExamDlg::updateJudgeAnswerFalse);
+
+    QObject::connect(this->ui->pushButton_330,&QPushButton::clicked,this,&CExamDlg::updateShortAnswer);
+    QObject::connect(this,&CExamDlg::startShowShortAnswer,this,&CExamDlg::showShortAnswerUI);
 }
 
 
@@ -374,6 +379,11 @@ void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会�
 //    this->ui->checkBox_6->setChecked(false);
 }
 
+void CExamDlg::clearShortAnswerOption()
+{
+    this->ui->textEdit_2->clear();
+}
+
 void CExamDlg::clearJudgeOption()
 {
     this->ui->radioButton_5->setAutoExclusive(false);
@@ -398,6 +408,31 @@ typedef struct updateMultiAnswerArg{
     QString answer;
     CExamDlg* thiz;
 }UpdateMultiAnswerArg;
+
+void CExamDlg::updateShortAnswer()
+{
+    std::shared_ptr<UpdateMultiAnswerArg> arg = std::make_shared<UpdateMultiAnswerArg>();
+    std::shared_ptr<UpdateMultiAnswerArg>* p = new std::shared_ptr<UpdateMultiAnswerArg>(arg);
+    arg->thiz = this;
+    arg->classId = this->classId;
+    arg->order = this->ui->pushButton_249->text().trimmed();
+    arg->studentId = this->studentId;
+    arg->teacherId = this->teacherId;
+    arg->testPaperId = this->testPaperId;
+    arg->answer = this->ui->textEdit_2->toPlainText().trimmed();
+    _beginthreadex(nullptr,0,&CExamDlg::threadUpdateShortAnswer,p,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadUpdateShortAnswer(LPVOID arg)
+{
+    std::shared_ptr<UpdateMultiAnswerArg>* p = (std::shared_ptr<UpdateMultiAnswerArg>*)arg;
+    std::shared_ptr<UpdateMultiAnswerArg> uInfo = *p;
+    uInfo->thiz->m_contorller->updateShortAnswer(uInfo->teacherId,uInfo->classId
+                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order,uInfo->answer);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
 
 void CExamDlg::updateMultiAnswerF(bool isChecked)  //回显的时候会进行设置状态也会重新触发
 {
@@ -807,6 +842,49 @@ unsigned WINAPI  CExamDlg::threadGetMultiChoice(LPVOID arg)
     return 0;
 }
 
+void CExamDlg::showShortAnswerUI(QString str)
+{
+    if(str == "NULL" || str == "")
+    {
+        //清空所有的选项
+       this->clearShortAnswerOption();
+    }else
+    {
+        //进行显示
+        this->ui->textEdit_2->setText(str);
+    }
+}
+
+void CExamDlg::getShortAnswer()
+{
+    this->clearShortAnswerOption();
+    std::shared_ptr<UpdateSignalArg> uArg = std::make_shared<UpdateSignalArg>();
+    std::shared_ptr<UpdateSignalArg>* p = new  std::shared_ptr<UpdateSignalArg>(uArg);
+    uArg->teacherId = this->teacherId;
+    uArg->classId = this->classId;
+    uArg->testPaperId = this->testPaperId;
+    uArg->studentId = this->studentId;
+    uArg->order = this->ui->pushButton_249->text().trimmed();
+    uArg->thiz = this;
+    _beginthreadex(nullptr,0,&CExamDlg::threadGetShortAnswer,p,0,nullptr);
+}
+
+unsigned WINAPI CExamDlg::threadGetShortAnswer(LPVOID arg)
+{
+    std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;
+    std::shared_ptr<UpdateSignalArg> uInfo = *p;
+    std::vector<std::vector<std::string>> ret =  uInfo->thiz->m_contorller->getShortAnswer(uInfo->teacherId,uInfo->classId
+                                               ,uInfo->testPaperId
+                                               ,uInfo->studentId,uInfo->order);
+    qDebug()<<"回显的答案："<<ret.size();
+    //进行对结果进行处理
+    QString str = QString::fromLocal8Bit(ret.at(0).at(0).c_str());
+    emit uInfo->thiz->startShowShortAnswer(str);
+    delete p;
+    _endthreadex(0);
+    return 0;
+}
+
 void CExamDlg::getJudgeChoice()
 {
     this->clearJudgeOption();
@@ -949,6 +1027,7 @@ void CExamDlg::updateSignalAnswertoB(bool isChecked)
     }
 }
 
+//TODO:明天接着继续简答题的部分。目前是答案没有存储进数据库。
 unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoC(LPVOID arg)
 {
     std::shared_ptr<UpdateSignalArg>* p = (std::shared_ptr<UpdateSignalArg>*)arg;

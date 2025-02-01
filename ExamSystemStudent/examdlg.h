@@ -31,6 +31,7 @@ signals:
     void startShowJudgeChoice(QVector<QVector<QString>>* ret);
     void startShowShortAnswerChoice(QVector<QVector<QString>>* ret);
     void startWarning();
+    void startShowShortAnswer(QString str);
 public:
     QString classId;
     QString teacherId;
@@ -157,6 +158,10 @@ private:
     void updateJudgeAnswerFalse(bool isChecked);
     static  unsigned WINAPI threadUpdateJudgeAnswerFalse(LPVOID arg);
 
+    //进行存储简答题的答案
+    void updateShortAnswer();
+    static unsigned WINAPI threadUpdateShortAnswer(LPVOID arg);
+
     //清除单选题被选中的Ui
     void clearSignalOption();
 
@@ -165,6 +170,9 @@ private:
 
     //清除判断题选中的UI
     void clearJudgeOption();
+
+    //清除简答题的中的答题答案
+    void clearShortAnswerOption();
 
     //实现点击上一题或者下一题的时候进行回显该题的选项，如果为NULL则进行清空所有选项，有选项则进行回显
     void getSignalChoice();
@@ -177,6 +185,13 @@ private:
     //实现点击上一题或者下一题的时候进行回显该题选项，如果为NULL则清空所有的选项，有则进行回显
     void getJudgeChoice();
     static unsigned WINAPI threadGetJudgeChoice(LPVOID arg);
+
+    //实现点击上一题或者下一题的时候进行回显该题的作答过的答案
+    void getShortAnswer();
+    static unsigned WINAPI threadGetShortAnswer(LPVOID arg);
+
+    //显示简答题的文本信息
+    void showShortAnswerUI(QString str);
 private:
      HANDLE m_mutex;
      static CExamDlg* m_thiz ;

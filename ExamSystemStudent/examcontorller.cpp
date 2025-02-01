@@ -5,6 +5,43 @@ CExamContorller::CExamContorller()
  this->m_model = new CExamModel();
 }
 
+std::vector<std::vector<std::string>> CExamContorller::getShortAnswer(QString& teacherId,QString& classId
+                                                     ,QString& testPaperId
+                                                     ,QString& studentId,QString& order)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+
+    int iOrder = order.toInt();
+    return this->m_model->getShortAnswer(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder);
+}
+
+bool CExamContorller::updateShortAnswer(QString& teacherId,QString& classId
+                       ,QString testPaperId
+                       ,QString& studentId,QString& order,QString& answer)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr  = studentId.toLocal8Bit();
+    int iOrder = order.toInt();
+    QByteArray answerArr = answer.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId = testPaperIdArr.data();
+    const char* pStudentId  = studentIdArr.data();
+    const char* pAnswer = answerArr.data();
+    return this->m_model->updateShortAnswer(pTeacherId,pClassId,pTestPaperId,pStudentId,iOrder,pAnswer);
+}
+
 std::vector<std::vector<std::string>>  CExamContorller::getJudgeChoice(QString& teacherId,QString& classId
                                                      ,QString& testPaperId
                                                      ,QString& studentId,QString& order)

@@ -61,6 +61,13 @@ public:
                                                          ,QString& testPaperId
                                                          ,QString& studentId,QString& order);
 
+    bool updateShortAnswer(QString& teacherId,QString& classId
+                           ,QString testPaperId
+                           ,QString& studentId,QString& order,QString& answer);
+    std::vector<std::vector<std::string>> getShortAnswer(QString& teacherId,QString& classId
+                                                         ,QString& testPaperId
+                                                         ,QString& studentId,QString& order);
+
 };
 
 #endif // CEXAMCONTORLLER_H

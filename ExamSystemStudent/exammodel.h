@@ -56,6 +56,14 @@ public:
     std::vector<std::vector<std::string>>  getJudgeChoice(const char* teacherId,const char* classId
                                                           ,const char* testPaperId
                                                           ,const char* studentId,int order);
+
+    bool  updateShortAnswer(const char* teacherId,const char* classId
+                           ,const char* testPaperId
+                           ,const char* studentId,int order,const char* answer);
+
+    std::vector<std::vector<std::string>>   getShortAnswer(const char* teacherId,const char* classId
+                                                          ,const char* testPaperId
+                                                          ,const char* studentId,int order);
 };
 
 #endif // CEXAMMODEL_H
