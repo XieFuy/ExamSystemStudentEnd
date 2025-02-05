@@ -85,6 +85,12 @@ private:
 
     CInfoMationDlg* m_infomationdlg = nullptr;
 
+
+    QString strSignalLabelStyleSheet; //单数行的label表格样式字符串
+    QString strSignalWidgetStyleSheet; //单数行的widget表格样式字符串
+
+    QString strDoubleLabelStyleSheet; //双数行的表格样式字符串
+    QString strDoubleWidgetStyleSheet; //双数行的widget表格样式字符串
 private:
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 

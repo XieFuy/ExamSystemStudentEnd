@@ -20,6 +20,13 @@ CMainMenueDlg::CMainMenueDlg(QWidget *parent) : //主菜单界面类
     this->ui->label_name->installEventFilter(this);
 //    this->m_exitLoginDlg->installEventFilter(this);
 
+
+    this->strSignalLabelStyleSheet = "QLabel{border:none;background-color:#E1EFD8;border-bottom:1px solid #646465;}";
+    this->strSignalWidgetStyleSheet = "QWidget{border:none;background-color:#E1EFD8;border-bottom:1px solid #646465;}";
+
+    this->strDoubleLabelStyleSheet = "QLabel{border:none;background-color:#FFFFFF;border-bottom:1px solid #646465;}";
+    this->strDoubleWidgetStyleSheet = "QWidget{border:none;background-color:#FFFFFF;border-bottom:1px solid #646465;}";
+
     this->m_acount = "";
     this->m_classCount = "";
     this->sortNumberClass = 0;
@@ -485,7 +492,7 @@ void CMainMenueDlg::initTestPaperInfoContorl()
         QCheckBox* checkBox = new QCheckBox();
         checkBox->setText(QString::number(++this->sortNumberTestPaper));
         checkBox->setFont(QFont("黑体"));
-//        checkBox->setStyleSheet("QCheckBox{margin-left:5px;}");
+        checkBox->setStyleSheet("QCheckBox{border:none;}");
         checkBox->setVisible(false);
         layout->addWidget(checkBox);
         checkBox->setParent(widget);
@@ -568,6 +575,29 @@ void CMainMenueDlg::initTestPaperInfoContorl()
         this->m_TestPaperOperationsVec.push_back(widget);
     }
 
+    //进行初始化样式表
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        if(i % 2 == 0)
+        {
+            this->m_TestPaperCheckVec.at(i)->setStyleSheet(strSignalWidgetStyleSheet);
+            this->m_TestPaperNameVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_TestPaperStartTimeVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_TestPaperEndTimeVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_TestPaperLongTimeVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_TestPaperCreatorVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_TestPaperOperationsVec.at(i)->setStyleSheet(strSignalWidgetStyleSheet);
+        }else
+        {
+            this->m_TestPaperCheckVec.at(i)->setStyleSheet(strDoubleWidgetStyleSheet);
+            this->m_TestPaperNameVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_TestPaperStartTimeVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_TestPaperEndTimeVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_TestPaperLongTimeVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_TestPaperCreatorVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_TestPaperOperationsVec.at(i)->setStyleSheet(strDoubleWidgetStyleSheet);
+        }
+    }
     this->bindTestPaperOperators();
 }
 
@@ -1082,7 +1112,7 @@ void CMainMenueDlg::initJoinClassTableContorl()
         QCheckBox* checkBox = new QCheckBox();
         checkBox->setText(QString::number(++this->sortNumberClass));
         checkBox->setFont(QFont("黑体"));
-        checkBox->setStyleSheet("QCheckBox{margin-left:25px;}");
+        checkBox->setStyleSheet("QCheckBox{border:none;margin-left:25px;}");
         checkBox->setVisible(false);
         layout->addWidget(checkBox);
         checkBox->setParent(widget);
@@ -1154,6 +1184,28 @@ void CMainMenueDlg::initJoinClassTableContorl()
 //        release->setVisible(false);
         this->ui->tableWidget_2->setCellWidget(i,5,widget);
         this->m_classOperationsVec.push_back(widget);
+    }
+
+    //进行设置样式表
+    for(int i = 0 ; i < 8; i++)
+    {
+        if(i % 2 == 0)
+        {
+            this->m_classCheckVec.at(i)->setStyleSheet(strSignalWidgetStyleSheet);
+            this->m_classIconVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_classNameVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_classCreateTimeVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_classCreatorVec.at(i)->setStyleSheet(strSignalLabelStyleSheet);
+            this->m_classOperationsVec.at(i)->setStyleSheet(strSignalWidgetStyleSheet);
+        }else
+        {
+            this->m_classCheckVec.at(i)->setStyleSheet(strDoubleWidgetStyleSheet);
+            this->m_classIconVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_classNameVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_classCreateTimeVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_classCreatorVec.at(i)->setStyleSheet(strDoubleLabelStyleSheet);
+            this->m_classOperationsVec.at(i)->setStyleSheet(strDoubleWidgetStyleSheet);
+        }
     }
 
     this->bindClassOperators();
