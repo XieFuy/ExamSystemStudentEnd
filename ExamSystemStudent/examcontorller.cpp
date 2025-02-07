@@ -5,6 +5,24 @@ CExamContorller::CExamContorller()
  this->m_model = new CExamModel();
 }
 
+bool CExamContorller::addCommitTestPaper(QString& teacherId,QString& classId,QString& testPaperId
+                        ,QString& studentId,QString& testPaperName)
+{
+    QByteArray teacherIdArr = teacherId.toLocal8Bit();
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray testPaperIdArr = testPaperId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+    QByteArray testPaperNameArr = testPaperName.toLocal8Bit();
+
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pClassId = classIdArr.data();
+    const char* pTestPaperId  = testPaperIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+    const char* pTestPaperName = testPaperNameArr.data();
+    return this->m_model->addCommitTestPaper(pTeacherId,pClassId,pTestPaperId
+                                             ,pStudentId,pTestPaperName);
+}
+
 std::vector<std::vector<std::string>> CExamContorller::getShortAnswer(QString& teacherId,QString& classId
                                                      ,QString& testPaperId
                                                      ,QString& studentId,QString& order)

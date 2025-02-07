@@ -33,6 +33,7 @@ signals:
     void startWarning();
     void startShowShortAnswer(QString str);
 public:
+    QString testPaperName;//试卷名称
     QString classId;
     QString teacherId;
     QString startTime;
@@ -192,6 +193,10 @@ private:
 
     //显示简答题的文本信息
     void showShortAnswerUI(QString str);
+
+    //进行添加提交记录
+    void addCommitTestPaper();
+    static unsigned WINAPI  threadAddCommitTestPaper(LPVOID arg);
 private:
      HANDLE m_mutex;
      static CExamDlg* m_thiz ;

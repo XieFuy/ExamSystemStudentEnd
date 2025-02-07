@@ -64,6 +64,8 @@ public:
     std::vector<std::vector<std::string>>   getShortAnswer(const char* teacherId,const char* classId
                                                           ,const char* testPaperId
                                                           ,const char* studentId,int order);
+    bool addCommitTestPaper(const char* teacherId,const char* classId,const char* testPaperId
+                            ,const char* studentId,const char* testPaperName);
 };
 
 #endif // CEXAMMODEL_H

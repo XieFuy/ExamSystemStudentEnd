@@ -23,6 +23,7 @@ public:
     QString longTime;
     QString studentName;
     QString studentId;
+    QString testPaperName;
 signals:
     void returnToMainMenueDlg();
 private:

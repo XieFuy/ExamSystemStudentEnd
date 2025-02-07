@@ -13,6 +13,9 @@ CExamDlg::CExamDlg(QWidget *parent) :
     this->m_contorller = new CExamContorller();
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     QObject::connect(this->ui->pushButton_5,&QPushButton::clicked,[=](){
+
+        //进行执行添加提交记录
+        this->addCommitTestPaper();
         UnhookWindowsHookEx(g_hookHandle);
         CExamDlg::g_hookHandle = nullptr;
         emit this->rejected();
@@ -32,6 +35,8 @@ CExamDlg::CExamDlg(QWidget *parent) :
     this->signalChoiceCurIndex = 1;
     this->multiChoiceCurIndex = 1;
     this->shortAnswerCurIndex = 1;
+    this->testPaperName = "";
+
     this->m_mutex = CreateMutex(nullptr,FALSE,nullptr);
 
     QObject::connect(this->ui->pushButton,&QPushButton::clicked,[=](){
@@ -377,6 +382,39 @@ void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会�
 //    this->ui->checkBox_4->setChecked(false);
 //    this->ui->checkBox_5->setChecked(false);
 //    this->ui->checkBox_6->setChecked(false);
+}
+
+typedef struct addCommitTestPaper{
+    QString teacherId;
+    QString classId;
+    QString testPaperId;
+    QString studentId;
+    QString testPaperName;
+    CExamDlg* thiz;
+}AddCommitTestPaper;
+
+void CExamDlg::addCommitTestPaper()
+{
+    std::shared_ptr<AddCommitTestPaper> arg = std::make_shared<AddCommitTestPaper>();
+    arg->teacherId = this->teacherId;
+    arg->classId = this->classId;
+    arg->testPaperId = this->testPaperId;
+    arg->studentId = this->studentId;
+    arg->testPaperName = this->testPaperName;
+    arg->thiz = this;
+    std::shared_ptr<AddCommitTestPaper>* p = new std::shared_ptr<AddCommitTestPaper>(arg);
+    _beginthreadex(nullptr,0,&CExamDlg::threadAddCommitTestPaper,p,0,nullptr);
+}
+
+unsigned WINAPI  CExamDlg::threadAddCommitTestPaper(LPVOID arg)
+{
+    std::shared_ptr<AddCommitTestPaper>* p = (std::shared_ptr<AddCommitTestPaper>*)arg;
+    std::shared_ptr<AddCommitTestPaper> aInfo = *p;
+    aInfo->thiz->m_contorller->addCommitTestPaper(aInfo->teacherId,aInfo->classId,aInfo->testPaperId,
+                                                  aInfo->studentId,aInfo->testPaperName);
+
+    delete p;
+    _endthreadex(0);
 }
 
 void CExamDlg::clearShortAnswerOption()

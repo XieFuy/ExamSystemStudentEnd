@@ -201,8 +201,9 @@ void CMainMenueDlg::bindTestPaperOperators()
                                  QString startTime = this->m_TestPaperStartTimeVec.at(row)->text().trimmed();
                                  QString endTime = this->m_TestPaperEndTimeVec.at(row)->text().trimmed();
                                  QString longTime = this->m_TestPaperLongTimeVec.at(row)->text().trimmed();
+                                 QString testPaperName = this->m_TestPaperNameVec.at(row)->text().trimmed();
                                  //进行考前提示
-                                 showInfomationDlg(classId,teacherId,startTime,endTime,longTime);
+                                 showInfomationDlg(classId,teacherId,startTime,endTime,longTime,testPaperName);
                                  break;
                              }
                          }
@@ -214,7 +215,7 @@ void CMainMenueDlg::bindTestPaperOperators()
     }
 }
 
-void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime)
+void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime,QString testPaperName)
 { 
     if(this->m_infomationdlg == nullptr)  //找到崩溃原因，要先进行显示父窗口，再进行释放类内的对象
     {
@@ -225,6 +226,7 @@ void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString 
        this->m_infomationdlg->startTime = startTime;
        this->m_infomationdlg->endTime = endTime;
        this->m_infomationdlg->longTime = longTime;
+       this->m_infomationdlg->testPaperName = testPaperName;
        this->m_infomationdlg->studentId =  this->m_acount;
        this->m_infomationdlg->studentName = this->ui->label_3->text().trimmed();
        this->m_infomationdlg->show();

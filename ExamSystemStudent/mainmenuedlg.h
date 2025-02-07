@@ -183,7 +183,7 @@ private:
     void showTestPaperTableLastPage();//显示课程表的上一页数据
 
     //学生点击进入考试，出现考试题型
-    void showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime);
+    void showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime,QString testPaperName);
 
     //绑定考试信息表的按钮操作
     void bindTestPaperOperators();

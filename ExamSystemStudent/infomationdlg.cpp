@@ -22,6 +22,7 @@ CInfoMationDlg::CInfoMationDlg(QWidget *parent) :
             this->m_examDlg->longTime = this->longTime;
             this->m_examDlg->studentId = this->studentId;
             this->m_examDlg->studentName = this->studentName;
+            this->m_examDlg->testPaperName = this->testPaperName;
             this->m_examDlg->show();
             this->hide();
             emit this->m_examDlg->startDoModel();

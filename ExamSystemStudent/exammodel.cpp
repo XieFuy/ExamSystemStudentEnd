@@ -5,6 +5,25 @@ CExamModel::CExamModel()
 
 }
 
+bool CExamModel::addCommitTestPaper(const char* teacherId,const char* classId,const char* testPaperId
+                        ,const char* studentId,const char* testPaperName)
+{
+    if(teacherId == nullptr || classId == nullptr || testPaperId == nullptr
+            || studentId == nullptr || testPaperName == nullptr )
+    {
+        return false;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    std::string sql;
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    sprintf(sqlBuf.get(),"insert into `commitTestPaper`(`teacherId`,`classId`,`testPaperId`,`studentId`,`testPaperName`) \
+values ('%s','%s','%s','%s','%s');",teacherId,classId,testPaperId,studentId,testPaperName);
+    sql = sqlBuf.get();
+    qDebug()<<sql.c_str();
+    return dbHelper->sqlExcute(sql,"ExamSystem");
+}
+
 std::vector<std::vector<std::string>> CExamModel::getShortAnswer(const char* teacherId,const char* classId
                                                       ,const char* testPaperId
                                                       ,const char* studentId,int order)

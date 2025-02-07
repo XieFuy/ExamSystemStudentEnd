@@ -67,6 +67,8 @@ public:
     std::vector<std::vector<std::string>> getShortAnswer(QString& teacherId,QString& classId
                                                          ,QString& testPaperId
                                                          ,QString& studentId,QString& order);
+    bool addCommitTestPaper(QString& teacherId,QString& classId,QString& testPaperId
+                            ,QString& studentId,QString& testPaperName);
 
 };
 
