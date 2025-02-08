@@ -10,6 +10,27 @@ CMainMenueModel::~CMainMenueModel()
 
 }
 
+int CMainMenueModel::checkJoinExam(const char* classId,const char* teacherId
+                   ,const char* studentId,const char* testPaperName)
+{
+    if(classId == nullptr || teacherId == nullptr ||
+            studentId == nullptr || testPaperName == nullptr)
+    {
+        return -1;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    std::string sql;
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    sprintf(sqlBuf.get(),"select count(*) from `commitTestPaper` \
+where `teacherId` = '%s' and `classId` = '%s' and `testPaperName` = '%s' and `studentId` = '%s';"
+            ,teacherId,classId,testPaperName,studentId);
+    sql = sqlBuf.get();
+//    qDebug()<<sql.c_str();
+    int tableCount =  dbHelper->sqlQueryCount(sql,"ExamSystem"); //获取的是表的记录条数
+    return tableCount;
+}
+
 int CMainMenueModel::getTestPaperTableCount(const char* acount)
 {
     if(acount == nullptr)

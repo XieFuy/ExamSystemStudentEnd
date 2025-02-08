@@ -22,6 +22,8 @@ public :
     static unsigned threadDeleteMultiClassInfo(LPVOID arg);
     std::vector<std::vector<std::string>> getTestPaperData(QString acount,int curIndex);
     int getTestPaperTableCount(QString acount);
+    int checkJoinExam(QString& classId,QString& teacherId
+                       ,QString& studentId,QString& testPaperName);
  private:
     CMainMenueModel* m_mainMenueModel = nullptr;
 };

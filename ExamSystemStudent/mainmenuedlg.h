@@ -188,6 +188,8 @@ private:
     //绑定考试信息表的按钮操作
     void bindTestPaperOperators();
 
+    bool checkJoinExam(QString& classId,QString& teacherId,QString& studentId,QString& testPaperName);//进行查询是否可以进行进入考试
+    static unsigned WINAPI threadCheckJoinExam(LPVOID arg);
 private:
     Ui::CMainMenueDlg *ui;
 };

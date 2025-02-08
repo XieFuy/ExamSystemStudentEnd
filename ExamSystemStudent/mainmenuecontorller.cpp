@@ -5,6 +5,22 @@ CMainMenueContorller::CMainMenueContorller()
  this->m_mainMenueModel = new CMainMenueModel();
 }
 
+int CMainMenueContorller::checkJoinExam(QString& classId,QString& teacherId
+                   ,QString& studentId,QString& testPaperName)
+{
+
+    QByteArray classIdArr = classId.toLocal8Bit();
+    QByteArray teacherIdArr  = teacherId.toLocal8Bit();
+    QByteArray studentIdArr = studentId.toLocal8Bit();
+    QByteArray testPaperNameArr = testPaperName.toLocal8Bit();
+
+    const char* pClassId = classIdArr.data();
+    const char* pTeacherId = teacherIdArr.data();
+    const char* pStudentId = studentIdArr.data();
+    const char* pTestPaperName = testPaperNameArr.data();
+    return this->m_mainMenueModel->checkJoinExam(pClassId,pTeacherId,pStudentId,pTestPaperName);
+}
+
 int CMainMenueContorller::getTestPaperTableCount(QString acount)
 {
     QByteArray acountArr = acount.toLocal8Bit();

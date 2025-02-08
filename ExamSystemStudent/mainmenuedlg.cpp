@@ -215,8 +215,63 @@ void CMainMenueDlg::bindTestPaperOperators()
     }
 }
 
+typedef struct checkJoinExamArg{
+    QString testPaperName;
+    QString teacherId;
+    QString studentId;
+    QString classId;
+    CMainMenueDlg* thiz;
+    bool ret_out;
+}CheckJoinExamArg;
+
+//如果已经参加考试并且提交过后，则返回true,否则返回false
+bool CMainMenueDlg::checkJoinExam(QString& classId,QString& teacherId,QString& studentId,QString& testPaperName)
+{
+    std::shared_ptr<CheckJoinExamArg> arg = std::make_shared<CheckJoinExamArg>();
+    arg->testPaperName = testPaperName;
+    arg->teacherId = teacherId;
+    arg->studentId = studentId;
+    arg->classId = classId;
+    arg->thiz = this;
+    arg->ret_out = false;
+    std::shared_ptr<CheckJoinExamArg>* p = new std::shared_ptr<CheckJoinExamArg>(arg);
+    HANDLE thread = (HANDLE)_beginthreadex(nullptr,0,&CMainMenueDlg::threadCheckJoinExam,p,0,nullptr);
+    WaitForSingleObject(thread,INFINITE);
+    delete p;
+    qDebug()<<"对象的引用计数：预期：1 实际："<<arg.use_count();
+    return arg->ret_out;
+}
+
+unsigned WINAPI CMainMenueDlg::threadCheckJoinExam(LPVOID arg)
+{
+    std::shared_ptr<CheckJoinExamArg>* p = (std::shared_ptr<CheckJoinExamArg>*)arg;
+    std::shared_ptr<CheckJoinExamArg> cInfo = *p;
+    int ret =  cInfo->thiz->m_mainMenueContorller->checkJoinExam(cInfo->classId,cInfo->teacherId
+                                                                 ,cInfo->studentId,cInfo->testPaperName);
+    if(ret > 0)
+    {
+        cInfo->ret_out = true;
+    }else
+    {
+        cInfo->ret_out = false;
+    }
+    qDebug()<<"返回结果："<<ret;
+    _endthreadex(0);
+    return 0;
+}
+
 void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime,QString testPaperName)
 { 
+    //进行检验是否可以进入考试，如果不可以进入考试则进行退出函数以及提示
+    if(this->checkJoinExam(classId,teacherId,this->m_acount,testPaperName))
+    {
+        //进行UI提示
+        QMessageBox* box = new QMessageBox(QMessageBox::Information,"提示","您已提交试卷，不可以再进入考试！",QMessageBox::Ok);
+        box->exec();
+        delete box;
+        return;
+    }
+
     if(this->m_infomationdlg == nullptr)  //找到崩溃原因，要先进行显示父窗口，再进行释放类内的对象
     {
        this->m_infomationdlg = new CInfoMationDlg();

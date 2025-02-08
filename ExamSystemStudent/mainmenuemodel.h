@@ -25,6 +25,8 @@ public:
     bool deleteClassInfoByDateTime(const char* acount,const char* createTime,const char* className);
     std::vector<std::vector<std::string>> getTestPaperData(const char* acount,int curIndex);
     int getTestPaperTableCount(const char* acount);
+    int checkJoinExam(const char* classId,const char* teacherId
+                       ,const char* studentId,const char* testPaperName);
 private:
       HANDLE m_mutex; //因为所有操作都是使用的一个CDBHelper对象，所以要给每一个执行sql的步骤进行上锁
 };
