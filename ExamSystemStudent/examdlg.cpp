@@ -25,6 +25,10 @@ CExamDlg::CExamDlg(QWidget *parent) :
     CExamDlg::hwnd = reinterpret_cast<HWND>(this->winId());
     CExamDlg::m_thiz = this;
 
+    this->m_isMouseRestricted = true;
+
+    this->setMouseTracking(true);
+
     this->timer = new QTimer();
     this->totalSeconds = 0;
     this->signalChoiceCount = 0;
@@ -346,8 +350,31 @@ CExamDlg::CExamDlg(QWidget *parent) :
 
     QObject::connect(this->ui->pushButton_330,&QPushButton::clicked,this,&CExamDlg::updateShortAnswer);
     QObject::connect(this,&CExamDlg::startShowShortAnswer,this,&CExamDlg::showShortAnswerUI);
-}
 
+
+     QTimer* timer = new QTimer(this);
+     QObject::connect(timer,&QTimer::timeout,[=](){
+         QPoint point = this->pos(); //mapToGlobal将局部坐标转为系统坐标
+         RECT mainWinRect;
+         mainWinRect.left = point.x();
+         mainWinRect.right = point.x() + this->width();
+         mainWinRect.top = point.y();
+         mainWinRect.bottom = point.y() + this->height();
+         ClipCursor(&mainWinRect);
+         qDebug()<<"x: "<< point.x()<<" Y:"<<point.y()<<this->width()<<" "<<this->height();
+         timer->stop();
+     });
+     timer->start(1000);
+   /* QPoint point = this->mapToGlobal(this->pos()); //mapToGlobal将局部坐标转为系统坐标
+
+    RECT mainWinRect;
+    mainWinRect.left = point.x()+ 3;
+    mainWinRect.right = point.x() + this->width();
+    mainWinRect.top = point.y()+ 33;
+    mainWinRect.bottom = point.y() + this->height();
+    ClipCursor(&mainWinRect);
+    qDebug()<<"x: "<< point.x()<<" Y:"<<point.y()<<this->width()<<" "<<this->height();*/
+}
 
 void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会影响 触发tologed信号
 {
@@ -381,7 +408,7 @@ void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会�
 //    this->ui->checkBox_3->setChecked(false);
 //    this->ui->checkBox_4->setChecked(false);
 //    this->ui->checkBox_5->setChecked(false);
-//    this->ui->checkBox_6->setChecked(false);
+//    this->ui->checkBox_6->setChecked(false); 
 }
 
 typedef struct addCommitTestPaper{
@@ -1698,5 +1725,6 @@ CExamDlg::~CExamDlg()
     }
     CExamDlg::hwnd = nullptr;
     CExamDlg::m_thiz = nullptr;
+    ClipCursor(NULL);
     delete ui;
 }

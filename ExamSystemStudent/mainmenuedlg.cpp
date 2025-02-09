@@ -263,14 +263,14 @@ unsigned WINAPI CMainMenueDlg::threadCheckJoinExam(LPVOID arg)
 void CMainMenueDlg::showInfomationDlg(QString classId,QString teacherId,QString startTime,QString endTime,QString longTime,QString testPaperName)
 { 
     //进行检验是否可以进入考试，如果不可以进入考试则进行退出函数以及提示
-    if(this->checkJoinExam(classId,teacherId,this->m_acount,testPaperName))
-    {
-        //进行UI提示
-        QMessageBox* box = new QMessageBox(QMessageBox::Information,"提示","您已提交试卷，不可以再进入考试！",QMessageBox::Ok);
-        box->exec();
-        delete box;
-        return;
-    }
+//    if(this->checkJoinExam(classId,teacherId,this->m_acount,testPaperName))
+//    {
+//        //进行UI提示
+//        QMessageBox* box = new QMessageBox(QMessageBox::Information,"提示","您已提交试卷，不可以再进入考试！",QMessageBox::Ok);
+//        box->exec();
+//        delete box;
+//        return;
+//    }
 
     if(this->m_infomationdlg == nullptr)  //找到崩溃原因，要先进行显示父窗口，再进行释放类内的对象
     {

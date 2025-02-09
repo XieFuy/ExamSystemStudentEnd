@@ -7,6 +7,10 @@
 #include "examcontorller.h"
 #include "windows.h"
 #include <QDebug>
+#include <QMouseEvent>
+#include <QCursor>
+#include <windef.h>
+#include <windows.h>
 
 namespace Ui {
 class CExamDlg;
@@ -41,7 +45,9 @@ public:
     QString longTime;
     QString studentName;
     QString studentId;
-    QString multiAnswer; //用于存储多选题的选项
+    QString multiAnswer; //用于存储多选题的选项   
+private:
+     bool m_isMouseRestricted; // 标志位，表示是否限制鼠标移动
 private:
     //获取当前正在考试的试卷的id
     void getCurTestPaperId();

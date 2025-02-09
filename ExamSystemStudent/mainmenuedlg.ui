@@ -195,6 +195,9 @@ color:#ffffff;
     <property name="text">
      <string>谢福玉</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
