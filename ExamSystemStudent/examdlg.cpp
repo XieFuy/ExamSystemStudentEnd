@@ -365,15 +365,6 @@ CExamDlg::CExamDlg(QWidget *parent) :
          timer->stop();
      });
      timer->start(1000);
-   /* QPoint point = this->mapToGlobal(this->pos()); //mapToGlobal将局部坐标转为系统坐标
-
-    RECT mainWinRect;
-    mainWinRect.left = point.x()+ 3;
-    mainWinRect.right = point.x() + this->width();
-    mainWinRect.top = point.y()+ 33;
-    mainWinRect.bottom = point.y() + this->height();
-    ClipCursor(&mainWinRect);
-    qDebug()<<"x: "<< point.x()<<" Y:"<<point.y()<<this->width()<<" "<<this->height();*/
 }
 
 void CExamDlg::clearMultiOption() //原因是在设置setChecked的时候也会影响 触发tologed信号

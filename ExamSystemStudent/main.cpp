@@ -5,6 +5,7 @@
 #include<windows.h>
 #include<wingdi.h>
 #endif
+#include"dpihelper.h"
 
 class ScreenInfo{
 public:
@@ -52,13 +53,33 @@ void ScreenInfo::getScreenSize(int& width,int& height)
 }
 
 int main(int argc, char *argv[])
-{
-    /*启用缩放*/
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-//    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+{ 
+    /******************上部分的代码是设置dpi的代码***********************/
     QApplication a(argc, argv);
-//    std::shared_ptr<ScreenInfo> sInfo = std::make_shared<ScreenInfo>();
+    std::shared_ptr<DpiHelper> dpiHelper = std::make_shared<DpiHelper>();
+    //申请管理员权限
+    if (!dpiHelper->isRunningAsAdmin()) {
+            if (dpiHelper->requestAdminRights()) {
+                return 0; // 退出当前实例，等待管理员权限实例启动
+            } else {
+                return -1; // 退出程序
+            }
+    }
+
+    //进行获取当前dpi
+    // 获取当前缩放比例
+    int currentScaling =dpiHelper->GetCurrentScalingPercentage();
+    dpiHelper->localScaling = currentScaling;
+
+    //设置缩放比例为125%
+    int targetScaling = 125;
+     if (dpiHelper->SetScalingPercentage(targetScaling)) {
+        qDebug()<< "Scaling percentage set to " << targetScaling << "%";
+     } else {
+        qDebug()<< "Failed to set scaling percentage.";
+     }
+
+    std::shared_ptr<ScreenInfo> sInfo = std::make_shared<ScreenInfo>();
     Widget w;
     w.show();
     return a.exec();
