@@ -70,7 +70,7 @@ unsigned WINAPI CMainMenueContorller::threadDeleteMultiClassInfo(LPVOID arg)
     DeleteMultiClassInfoArg* dInfo = (DeleteMultiClassInfoArg*)arg;
     dInfo->thiz->m_mainMenueModel->deleteClassInfoByDateTime(dInfo->acount,dInfo->createTime,dInfo->className);
     delete dInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 

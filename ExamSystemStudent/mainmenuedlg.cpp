@@ -256,7 +256,7 @@ unsigned WINAPI CMainMenueDlg::threadCheckJoinExam(LPVOID arg)
         cInfo->ret_out = false;
     }
     qDebug()<<"返回结果："<<ret;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -473,6 +473,7 @@ void CMainMenueDlg::getTestPaperData()
     _beginthreadex(nullptr,0,&CMainMenueDlg::threadGetTestPaperDataEntry,ptr,0,nullptr);
 }
 
+
 unsigned WINAPI CMainMenueDlg::threadGetTestPaperDataEntry(LPVOID arg)
 {
     std::shared_ptr<GetTestPaperDataArg>* temp = static_cast<std::shared_ptr<GetTestPaperDataArg>*>(arg);
@@ -499,7 +500,7 @@ unsigned WINAPI CMainMenueDlg::threadGetTestPaperDataEntry(LPVOID arg)
     //发送回显信号
     emit  gInfo->thiz->startShowTestPaperTableInfo(result);
     delete temp;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -534,7 +535,7 @@ unsigned WINAPI CMainMenueDlg::threadGetTestPaperTableCountEntry(LPVOID arg)
    //进行发送信号，进行显示总页数
    emit gInfo->thiz->startShowTestPaperTableIndex();
    delete temp;
-   _endthreadex(0);
+   //_endthreadex(0);
    return 0;
 }
 
@@ -750,7 +751,7 @@ unsigned WINAPI CMainMenueDlg::threadDeleteMultiClassInfo(LPVOID arg)
     dInfo->thiz->m_classCurPageIndex = 1;
     emit dInfo->thiz->startGetClassTableInfo();
     dInfo->thiz->getClassTableCount();
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -786,7 +787,7 @@ unsigned WINAPI CMainMenueDlg::threadDeleteClassInfoByDateTimeEntry(LPVOID arg)
     emit dInfo->thiz->startGetClassTableInfo();
     dInfo->thiz->getClassTableCount();
     delete dInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -871,7 +872,7 @@ unsigned WINAPI CMainMenueDlg::threadGetClassTableCountEntry(LPVOID arg)
     //进行发送信号，进行显示总页数
     emit gInfo->thiz->startShowClassTableIndex();
     delete gInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1003,7 +1004,7 @@ unsigned WINAPI CMainMenueDlg::showClassIcon(LPVOID arg)
     emit  thiz->startShowClassIcon(image);
 //    delete[] pixmapData;
     delete[] recvBuffer;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1095,7 +1096,7 @@ unsigned WINAPI CMainMenueDlg::threadGetClassTableDataEntry(LPVOID arg)
     }
     emit dInfo->thiz->startShowClassTable(result);
     delete dInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1108,7 +1109,7 @@ unsigned WINAPI CMainMenueDlg::threadInitClassTableDatabaseEntry(LPVOID arg)
 {
     CMainMenueDlg* thiz = (CMainMenueDlg*)arg;
     thiz->m_mainMenueContorller->initClassTableDatabase();
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1333,7 +1334,7 @@ unsigned WINAPI CMainMenueDlg::threadChangeGenderEntry(LPVOID arg)
     ChangeGenderArg* cInfo =  (ChangeGenderArg*)arg;
     cInfo->thiz->m_mainMenueContorller->changeGender(cInfo->isChecked,cInfo->thiz->m_acount);
     delete cInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1357,7 +1358,7 @@ unsigned WINAPI CMainMenueDlg::threadGetStudentAcountInfoDataEntry(LPVOID arg)
     std::vector<std::vector<std::string>> ret =  tInfo->thiz->m_mainMenueContorller->showStudentAcountInfo(tInfo->acount); //view层调用conntorller层的接口全部写到子线程中
     emit tInfo->thiz->startShowStudentAcountInfo(&ret);
     delete tInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1474,7 +1475,7 @@ unsigned WINAPI CMainMenueDlg::threadShowHeadEntry(LPVOID arg)
 {
     CMainMenueDlg* thiz = (CMainMenueDlg*)arg;
     thiz->threadShowHead();
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 

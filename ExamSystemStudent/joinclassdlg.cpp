@@ -94,7 +94,7 @@ unsigned WINAPI CJoinClassDlg::threadAddRequestJoinClass(LPVOID arg)
     AddRequestJoinClassArg* aInfo = (AddRequestJoinClassArg*)arg;
     aInfo->thiz->addRequestJoinClass(aInfo->teacherId,aInfo->className,aInfo->studentName,aInfo->acount);
     delete aInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -148,7 +148,7 @@ unsigned WINAPI CJoinClassDlg::threadGetClassByTeacherId(LPVOID arg)
     //发送信号，将结果进行显示
     emit gInfo->thiz->startShowClass(ret);
     delete gInfo;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 

@@ -432,7 +432,8 @@ unsigned WINAPI  CExamDlg::threadAddCommitTestPaper(LPVOID arg)
                                                   aInfo->studentId,aInfo->testPaperName);
 
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
+    return 0;
 }
 
 void CExamDlg::clearShortAnswerOption()
@@ -486,7 +487,7 @@ unsigned WINAPI CExamDlg::threadUpdateShortAnswer(LPVOID arg)
     uInfo->thiz->m_contorller->updateShortAnswer(uInfo->teacherId,uInfo->classId
                                                      ,uInfo->testPaperId,uInfo->studentId,uInfo->order,uInfo->answer);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -735,7 +736,7 @@ unsigned WINAPI CExamDlg::threadUpdateMultiAnswer(LPVOID arg)
                                                  ,uInfo->order,uInfo->answer);
     delete p;
     ReleaseMutex(uInfo->thiz->m_mutex);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -791,7 +792,7 @@ unsigned WINAPI CExamDlg::threadUpdateJudgeAnswerTrue(LPVOID arg)
     uInfo->thiz->m_contorller->updateJudgeAnswerTrue(uInfo->teacherId,uInfo->classId
                                                      ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -818,7 +819,7 @@ unsigned WINAPI CExamDlg::threadUpdateJudgeAnswerFalse(LPVOID arg)
     uInfo->thiz->m_contorller->updateJudgeAnswerFalse(uInfo->teacherId,uInfo->classId
                                                      ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -894,7 +895,7 @@ unsigned WINAPI  CExamDlg::threadGetMultiChoice(LPVOID arg)
         }
     }
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -937,7 +938,7 @@ unsigned WINAPI CExamDlg::threadGetShortAnswer(LPVOID arg)
     QString str = QString::fromLocal8Bit(ret.at(0).at(0).c_str());
     emit uInfo->thiz->startShowShortAnswer(str);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -978,7 +979,7 @@ unsigned WINAPI CExamDlg::threadGetJudgeChoice(LPVOID arg)
         uInfo->thiz->ui->radioButton_5->setChecked(true);
     }
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1025,7 +1026,7 @@ unsigned WINAPI CExamDlg::threadGetSignalChoice(LPVOID arg)
         uInfo->thiz->ui->radioButton_4->setChecked(true);
     }
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1036,7 +1037,7 @@ unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoA(LPVOID arg)
    uInfo->thiz->m_contorller->updateSignalAnswertoA(uInfo->teacherId,uInfo->classId
                                                     ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
    delete p;
-   _endthreadex(0);
+   //_endthreadex(0);
    return 0;
 }
 
@@ -1063,7 +1064,7 @@ unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoB(LPVOID arg)
     uInfo->thiz->m_contorller->updateSignalAnswertoB(uInfo->teacherId,uInfo->classId
                                                      ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1091,7 +1092,7 @@ unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoC(LPVOID arg)
     uInfo->thiz->m_contorller->updateSignalAnswertoC(uInfo->teacherId,uInfo->classId
                                                      ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1118,7 +1119,7 @@ unsigned WINAPI CExamDlg::threadUpdateSignalAnswertoD(LPVOID arg)
     uInfo->thiz->m_contorller->updateSignalAnswertoD(uInfo->teacherId,uInfo->classId
                                                      ,uInfo->testPaperId,uInfo->studentId,uInfo->order);
     delete p;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1348,7 +1349,7 @@ unsigned WINAPI CExamDlg::threadGetCurIndexShortAnswerChoice(LPVOID arg)
         result->push_back(temp);
     }
     emit thiz->startShowShortAnswerChoice(result);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1400,7 +1401,7 @@ unsigned WINAPI CExamDlg::threadGetCurIndexJudegChoice(LPVOID arg)
         result->push_back(temp);
     }
     emit thiz->startShowJudgeChoice(result);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1492,7 +1493,7 @@ unsigned WINAPI CExamDlg::threadGetCurIndexMultiChoice(LPVOID arg)
         result->push_back(temp);
     }
     emit thiz->startShowMultiChoice(result);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1546,7 +1547,7 @@ unsigned WINAPI CExamDlg::threadGetCurIndexSignalChoice(LPVOID arg)
         result->push_back(temp);
     }
     emit thiz->startShowSignalChoice(result);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1578,7 +1579,7 @@ unsigned WINAPI CExamDlg::threadGetJudgeChoiceCount(LPVOID arg)
     thiz->judgeCount = JudgeCount;
     //显示对应的按钮数量
     emit thiz->startShowJudgeMenueBtn(thiz->judgeCount);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1594,7 +1595,7 @@ unsigned CExamDlg::WINAPI threadGetShortAnswerCount(LPVOID arg)
     thiz->shortAnswerCount = shortAnswerCount;
     //显示对应的按钮数量
     emit thiz->startShowShortAnswerBtn(thiz->shortAnswerCount);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1619,7 +1620,7 @@ unsigned WINAPI CExamDlg::threadGetMultiChoiceCount(LPVOID arg)
     thiz->multiChoiceCount = MultiCount;
     //显示对应的按钮数量
     emit thiz->startShowMultiMenueBtn(thiz->multiChoiceCount);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1646,7 +1647,7 @@ unsigned WINAPI CExamDlg::threadGetCurTestPaperId(LPVOID arg)
     QString str = QString::fromLocal8Bit(ret.at(0).at(0).c_str());
     thiz->testPaperId = str;
     qDebug()<<"获取到的试卷id"<<thiz->testPaperId;
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 
@@ -1665,7 +1666,7 @@ unsigned WINAPI CExamDlg::threadGetSignalChoiceCount(LPVOID arg)
     qDebug()<<"单选题题数："<<thiz->signalChoiceCount;
     //显示对应的按钮数量
     emit thiz->startShowMenueBtn(signalCount);
-    _endthreadex(0);
+    //_endthreadex(0);
     return 0;
 }
 

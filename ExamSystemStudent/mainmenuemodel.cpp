@@ -99,7 +99,7 @@ JOIN \n\
 JOIN\n\
 `TeacherInfo` ti ON ti.`teacherId` = tpr.`teacherId`\n\
 WHERE \n\
-jcsm.`studentId` = '%s' limit 8 offset %d;",acount,(curIndex - 1)*8);
+jcsm.`studentId` = '%s' ORDER BY tpr.examStartTime ASC limit 8 offset %d;",acount,(curIndex - 1)*8);
     sql = sqlBuf.get();
     std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
     return ret;
