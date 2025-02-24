@@ -41,18 +41,29 @@ int CMainMenueModel::getTestPaperTableCount(const char* acount)
     std::unique_ptr<char[]> sqlBuf(new char[1024000]);
     std::string sql;
     memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
-    sprintf(sqlBuf.get(),"SELECT COUNT(*) AS distinct_testPaperName_count\n\
+    sprintf(sqlBuf.get(),"SELECT COUNT(*) AS totalCount\n\
 FROM (\n\
 SELECT DISTINCT\n\
-tpi.`testPaperName`\n\
+tpi.`testPaperName`,\n\
+tpr.`examStartTime`,\n\
+tpr.`examEndTime`,\n\
+tpr.`examLongTimeMinute`,\n\
+ti.`name`,\n\
+tpr.`teacherId`,\n\
+tpr.`classId`\n\
 FROM \n\
 `testPaperRelease` tpr\n\
 JOIN \n\
 `testPaperInfo` tpi ON tpr.`testPaperId` = tpi.`testPaperId`\n\
 JOIN \n\
-`joinClassStudentManeage` jcsm ON tpr.`teacherId` = jcsm.`teacherId`\n\
+`class` c ON tpr.`classId` = c.`id`\n\
+JOIN \n\
+`joinClassStudentManeage` jcsm ON c.`className` = jcsm.`className` AND c.`teacherId` = jcsm.`teacherId`\n\
+JOIN\n\
+`TeacherInfo` ti ON ti.`teacherId` = tpr.`teacherId`\n\
 WHERE \n\
-jcsm.`studentId` = '%s') AS distinct_testPapers;",acount);
+jcsm.`studentId` = '%s'\n\
+) AS subquery;",acount);
     sql = sqlBuf.get();
     int tableCount =  dbHelper->sqlQueryCount(sql,"ExamSystem"); //获取的是表的记录条数
     tableCount -= 1; //减去最上面的一条记录
@@ -95,11 +106,15 @@ FROM \n\
 JOIN \n\
 `testPaperInfo` tpi ON tpr.`testPaperId` = tpi.`testPaperId`\n\
 JOIN \n\
-`joinClassStudentManeage` jcsm ON tpr.`teacherId` = jcsm.`teacherId`\n\
+`class` c ON tpr.`classId` = c.`id`\n\
+JOIN \n\
+`joinClassStudentManeage` jcsm ON c.`className` = jcsm.`className` AND c.`teacherId` = jcsm.`teacherId`\n\
 JOIN\n\
 `TeacherInfo` ti ON ti.`teacherId` = tpr.`teacherId`\n\
 WHERE \n\
-jcsm.`studentId` = '%s' ORDER BY tpr.examStartTime ASC limit 8 offset %d;",acount,(curIndex - 1)*8);
+jcsm.`studentId` = '%s' \n\
+ORDER BY tpr.examStartTime ASC \n\
+LIMIT 8 OFFSET %d;",acount,(curIndex - 1)*8);
     sql = sqlBuf.get();
     std::vector<std::vector<std::string>> ret =  dbHelper->sqlQuery(sql,"ExamSystem");
     return ret;

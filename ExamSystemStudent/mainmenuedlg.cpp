@@ -1356,7 +1356,17 @@ unsigned WINAPI CMainMenueDlg::threadGetStudentAcountInfoDataEntry(LPVOID arg)
 {
     StudentAcountInfoArg* tInfo = (StudentAcountInfoArg*)arg;
     std::vector<std::vector<std::string>> ret =  tInfo->thiz->m_mainMenueContorller->showStudentAcountInfo(tInfo->acount); //view层调用conntorller层的接口全部写到子线程中
-    emit tInfo->thiz->startShowStudentAcountInfo(&ret);
+    std::vector<std::vector<std::string>>* result  = new std::vector<std::vector<std::string>>();
+    for(int i = 0 ; i < ret.size() ; i++)
+    {
+        std::vector<std::string> temp;
+        for(int j = 0 ; j < ret.at(i).size();j++)
+        {
+            temp.push_back(ret.at(i).at(j));
+        }
+        result->push_back(temp);
+    }
+    emit tInfo->thiz->startShowStudentAcountInfo(result);
     delete tInfo;
     //_endthreadex(0);
     return 0;
@@ -1364,6 +1374,10 @@ unsigned WINAPI CMainMenueDlg::threadGetStudentAcountInfoDataEntry(LPVOID arg)
 
 void CMainMenueDlg::showStudentAcountInfo(std::vector<std::vector<std::string>>* ret)
 {
+    if(ret == nullptr || ret->size() == 0)
+    {
+        return;
+    }
     QString name = QString::fromLocal8Bit(ret->at(0).at(0).c_str());
     QString teacherId = QString::fromLocal8Bit(ret->at(0).at(1).c_str());
     QString gender = QString::fromLocal8Bit(ret->at(0).at(2).c_str());
@@ -1379,6 +1393,10 @@ void CMainMenueDlg::showStudentAcountInfo(std::vector<std::vector<std::string>>*
         this->ui->radioButton_8->setChecked(true);
     }
     this->ui->label_41->setText(phoneNumber);
+    if(ret != nullptr)
+    {
+        delete ret;
+    }
 }
 
 void CMainMenueDlg::setLoginedAcount(QString acount)
