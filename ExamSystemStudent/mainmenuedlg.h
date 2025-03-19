@@ -46,6 +46,10 @@ signals:
     void startGetClassTableCount();
     void startShowTestPaperTableInfo(QVector<QVector<QString>>* ret);
     void startShowTestPaperTableIndex();
+    void startShowStudentScore(QVector<QVector<QString>>* ret);
+    void startGetStudentScoreInfo();
+    void startInitStudentScoreContorlUI(int count);
+    void startSendStudentScoreCount(int count);
 private:
 //    CExitLoginDlg* m_exitLoginDlg = nullptr;
     CMainMenueContorller* m_mainMenueContorller = nullptr; //主菜单页面控制层
@@ -91,6 +95,27 @@ private:
 
     QString strDoubleLabelStyleSheet; //双数行的表格样式字符串
     QString strDoubleWidgetStyleSheet; //双数行的widget表格样式字符串
+
+
+    //学生成绩部分
+    QVector<QLabel*> m_studentScoreName;
+    QVector<QLabel*> m_studentScoreId;
+    QVector<QLabel*> m_studentScoreSubject;
+    QVector<QLabel*> m_studentScoreKeGuanScore;
+    QVector<QLabel*> m_studentScoreZhuGuanScore;
+    QVector<QLabel*> m_studentScoreSumScore;
+
+
+    int zoreToTen;
+    int TenToTwoty;
+    int twotyToThirty;
+    int thirtyToForty;
+    int fourtyToFifty;
+    int FiftyToSixty;
+    int SixtyToSeventy;
+    int seventyToEighty;
+    int EightToNighty;
+    int nightyToHunder;
 private:
     void  showStudentInfo(QString acount); //显示主页的职工个人姓名和头像
 
@@ -190,6 +215,18 @@ private:
 
     bool checkJoinExam(QString& classId,QString& teacherId,QString& studentId,QString& testPaperName);//进行查询是否可以进行进入考试
     static unsigned WINAPI threadCheckJoinExam(LPVOID arg);
+
+    void getStudentScoreCount(HANDLE& out_handle);
+    static unsigned WINAPI  threadGetStudentScoreCount(LPVOID arg);
+
+    //设置成绩表UI
+    void setStudentScoreContorlUI(int rowCount); //进行设置成绩表UI和控件
+
+    //获取该学生已经参与考试的科目的表格信息
+    void getSubjectTestPaperRelease();
+    static unsigned WINAPI threadGetSubjectTestPaperRelease(LPVOID arg);
+
+    void showStudentScoreUI(QVector<QVector<QString>>* ret);//显示表格内容
 private:
     Ui::CMainMenueDlg *ui;
 };

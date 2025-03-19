@@ -10,6 +10,51 @@ CMainMenueModel::~CMainMenueModel()
 
 }
 
+int CMainMenueModel::getStudentScoreCount(const char* studentId)
+{
+    if(studentId == nullptr)
+    {
+        return -1;
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    std::string sql;
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    sprintf(sqlBuf.get(),"select count(*) from `scoreCount` \
+where `studentId` = '%s';",studentId);
+    sql = sqlBuf.get();
+    return dbHelper->sqlQueryCount(sql,"ExamSystem");
+}
+
+std::vector<std::vector<std::string>> CMainMenueModel::getSubjectTestPaperRelease(const char* studentId)
+{
+    if(studentId == nullptr)
+    {
+        return std::vector<std::vector<std::string>>();
+    }
+    std::shared_ptr<CDBHelper> dbHelper = std::make_shared<CDBHelper>();
+    std::unique_ptr<char[]> sqlBuf(new char[1024000]);
+    std::string sql;
+    memset(sqlBuf.get(),'\0',sizeof(char) * 1024000);
+    sprintf(sqlBuf.get(),"SELECT \n\
+si.`name`,\n\
+sc.`studentId`,\n\
+c.`className`,\n\
+sc.`keGuanScore`,\n\
+sc.`shuGuanScore`,\n\
+(IFNULL(sc.`keGuanScore`, 0) + IFNULL(sc.`shuGuanScore`, 0)) AS `totalScore`\n\
+FROM \n\
+`scoreCount` sc\n\
+JOIN \n\
+`StudentInfo` si ON sc.`studentId` = si.`studentId`\n\
+JOIN \n\
+`class` c ON sc.`classId` = c.`id` AND c.`teacherId` = sc.`teacherId`\n\
+WHERE \n\
+sc.`studentId` = '%s';",studentId);
+    sql = sqlBuf.get();
+    return dbHelper->sqlQuery(sql,"ExamSystem");
+}
+
 int CMainMenueModel::checkJoinExam(const char* classId,const char* teacherId
                    ,const char* studentId,const char* testPaperName)
 {

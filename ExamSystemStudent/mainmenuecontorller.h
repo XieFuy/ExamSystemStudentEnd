@@ -24,6 +24,8 @@ public :
     int getTestPaperTableCount(QString acount);
     int checkJoinExam(QString& classId,QString& teacherId
                        ,QString& studentId,QString& testPaperName);
+    std::vector<std::vector<std::string>> getSubjectTestPaperRelease(QString& studentId);
+    int getStudentScoreCount(QString& studentId);
  private:
     CMainMenueModel* m_mainMenueModel = nullptr;
 };

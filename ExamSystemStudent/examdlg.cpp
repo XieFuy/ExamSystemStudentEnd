@@ -101,7 +101,6 @@ CExamDlg::CExamDlg(QWidget *parent) :
         CExamDlg::g_hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL,CExamDlg::HookProcScreen, NULL, 0);
     });
 
-    //TODO:明天接着这里继续
     //将Ui中的题号按钮都加入到容器中
     for(int i = 8 ; i <= 85 ; i++ )
     {

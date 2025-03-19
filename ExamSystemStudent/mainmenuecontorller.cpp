@@ -5,6 +5,20 @@ CMainMenueContorller::CMainMenueContorller()
  this->m_mainMenueModel = new CMainMenueModel();
 }
 
+int CMainMenueContorller::getStudentScoreCount(QString& studentId)
+{
+    QByteArray teacherIdArr = studentId.toLocal8Bit();
+    const char* pTeacherId = teacherIdArr.data();
+    return this->m_mainMenueModel->getStudentScoreCount(pTeacherId);
+}
+
+std::vector<std::vector<std::string>> CMainMenueContorller::getSubjectTestPaperRelease(QString& studentId)
+{
+    QByteArray teacherIdArr = studentId.toLocal8Bit();
+    const char* pTeacherId = teacherIdArr.data();
+    return this->m_mainMenueModel->getSubjectTestPaperRelease(pTeacherId);
+}
+
 int CMainMenueContorller::checkJoinExam(QString& classId,QString& teacherId
                    ,QString& studentId,QString& testPaperName)
 {
