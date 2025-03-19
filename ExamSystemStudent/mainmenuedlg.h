@@ -20,6 +20,8 @@
 #include <QHBoxLayout>
 #include "joinclassdlg.h"
 #include "infomationdlg.h"
+#include "xlsxdocument.h"
+#include "bar_widget.h"
 
 namespace Ui {
 class CMainMenueDlg;  //主菜单管理页面
@@ -105,6 +107,8 @@ private:
     QVector<QLabel*> m_studentScoreZhuGuanScore;
     QVector<QLabel*> m_studentScoreSumScore;
 
+    //矩形图
+    std::shared_ptr<BarWidget> barWidget;
 
     int zoreToTen;
     int TenToTwoty;
@@ -227,6 +231,8 @@ private:
     static unsigned WINAPI threadGetSubjectTestPaperRelease(LPVOID arg);
 
     void showStudentScoreUI(QVector<QVector<QString>>* ret);//显示表格内容
+
+    void writeStudentScoreToExcel();
 private:
     Ui::CMainMenueDlg *ui;
 };

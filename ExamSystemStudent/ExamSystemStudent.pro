@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,8 +9,11 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bar_widget.cpp \
+    chart_view_x.cpp \
     clientsocket.cpp \
     dbhelper.cpp \
+    donut_breakdown_chart.cpp \
     dpihelper.cpp \
     examcontorller.cpp \
     examdlg.cpp \
@@ -25,6 +28,7 @@ SOURCES += \
     mainmenuemodel.cpp \
     namechangedlg.cpp \
     phonenumberchangedlg.cpp \
+    pie_slice_x.cpp \
     registercontorller.cpp \
     registerdlg.cpp \
     registermodel.cpp \
@@ -32,7 +36,10 @@ SOURCES += \
 
 HEADERS += \
     DBHelper.h \
+    bar_widget.h \
+    chart_view_x.h \
     clientsocket.h \
+    donut_breakdown_chart.h \
     dpihelper.h \
     examcontorller.h \
     examdlg.h \
@@ -46,6 +53,7 @@ HEADERS += \
     mainmenuemodel.h \
     namechangedlg.h \
     phonenumberchangedlg.h \
+    pie_slice_x.h \
     registercontorller.h \
     registerdlg.h \
     registermodel.h \
@@ -77,7 +85,7 @@ DEPENDPATH += $$PWD/.
 win32:!win32-g++: PRE_TARGETDEPS += $$PWD/./libmysql.lib
 
 INCLUDEPATH += .\include
-
+include(QXlsx/QXlsx.pri)
 
 LIBS += -lws2_32
 
